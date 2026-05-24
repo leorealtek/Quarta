@@ -10,10 +10,13 @@ import java.util.Scanner;
 public class Partita extends PartitaAstratta {
 
     private int ultimaMossaPerPatta;
+    private String percorsoDirectoryPartita = null;
+    private int numeroFileMossa = 0;
 
     public Partita() {
         super();
         inizializzaPartitaStandard();
+        salvaPerOgniRound();
     }
 
     public Partita(String percorsoFile) throws IOException{
@@ -49,7 +52,7 @@ public class Partita extends PartitaAstratta {
         mappa[7][7] = new Casella(new Torre('T', 7, 7, mappa));
 
         attaccaBianco = true;
-        mosse = 1;
+        mosse = 0;
     }
 
     @Override
@@ -72,8 +75,8 @@ public class Partita extends PartitaAstratta {
         mappa = migliore;
         pedoneEnPassant = bot.getPedoneEnPassantMigliore();
 
-        dopoMossa(turnoBianco);
         attaccaBianco = !attaccaBianco;
+        dopoMossa(turnoBianco);
     }
 
     private boolean botHaMossoPedoneOCatturato(Casella[][] prima, Casella[][] dopo, boolean coloreBot) {
@@ -219,8 +222,8 @@ public class Partita extends PartitaAstratta {
                 throw new FileNonValidoException("Numero mosse non valido.");
             }
 
-            if (mosse < 1) {
-                throw new FileNonValidoException("Il numero della mossa non può essere minore di 1.");
+            if (mosse < 0) {
+                throw new FileNonValidoException("Il numero della mossa non può essere negativo.");
             }
 
             this.ultimaMossaPerPatta = 0;
@@ -363,8 +366,8 @@ public class Partita extends PartitaAstratta {
             pedoneEnPassant = pedone;
         }
 
-        dopoMossa(coloreCheHaMosso);
         attaccaBianco = !attaccaBianco;
+        dopoMossa(coloreCheHaMosso);
     }
 
     public boolean pattaPerMosse() {
@@ -374,13 +377,71 @@ public class Partita extends PartitaAstratta {
         return false;
     }
 
+    private void salvaPerOgniRound() {
+        File cartellaPrincipale = new File("Scuola/Progettini/Scacchi/FilePartite/FileTemporanei");
+
+        try {
+            if (!cartellaPrincipale.exists()) {
+                cartellaPrincipale.mkdirs();
+            }
+
+            if (percorsoDirectoryPartita == null) {
+                int numeroPartita = trovaProssimoNumeroPartita(cartellaPrincipale);
+                File cartellaPartita = new File(cartellaPrincipale, "Partita" + numeroPartita);
+                cartellaPartita.mkdirs();
+                percorsoDirectoryPartita = cartellaPartita.getPath();
+            }
+
+            File fileMossa = new File(percorsoDirectoryPartita, "Mossa" + numeroFileMossa + ".txt");
+            salvaSuFile(fileMossa.getPath());
+            numeroFileMossa++;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int trovaProssimoNumeroPartita(File cartellaPrincipale) {
+        int numeroPartita = 1;
+        File[] elencoCartelle = cartellaPrincipale.listFiles();
+
+        if (elencoCartelle == null) {
+            return numeroPartita;
+        }
+
+        for (File cartella : elencoCartelle) {
+            if (!cartella.isDirectory()) {
+                continue;
+            }
+
+            String nome = cartella.getName();
+
+            if (!nome.startsWith("Partita")) {
+                continue;
+            }
+
+            try {
+                int numero = Integer.parseInt(nome.substring("Partita".length()));
+
+                if (numero >= numeroPartita) {
+                    numeroPartita = numero + 1;
+                }
+            } catch (NumberFormatException e) {
+                // Ignora cartelle tipo "PartitaVecchia" o nomi non numerici
+            }
+        }
+
+        return numeroPartita;
+    }
+
     @Override
     protected void dopoMossa(boolean coloreCheHaMosso) {
         mosse++;
+        salvaPerOgniRound();
     }
 
     public int getMosse() {
-        return mosse;
+        return mosse + 1;
     }
 
 }
