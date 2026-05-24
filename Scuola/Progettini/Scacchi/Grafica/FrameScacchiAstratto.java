@@ -21,6 +21,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
     protected static final Color COLORE_CATTURA = new Color(220, 80, 80);
     protected static final Color COLORE_ERRORE = new Color(220, 80, 80);
     protected static final Color COLORE_ARROCCO = new Color(120, 170, 230);
+    protected static final Color COLORE_MOVIMENTO = new Color(246, 246, 105);
 
     protected final JLabel[][] labels;
     protected final PartitaAstratta partita;
@@ -29,6 +30,12 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
 
     protected int rigaSelezionata = -1;
     protected int colonnaSelezionata = -1;
+
+    protected int rigaMovimentoPartenza = -1;
+    protected int colonnaMovimentoPartenza = -1;
+    protected int rigaMovimentoArrivo = -1;
+    protected int colonnaMovimentoArrivo = -1;
+    protected boolean mostraUltimoMovimento = false;
 
     protected boolean erroreVisibile = false;
     protected boolean finito = false;
@@ -111,6 +118,8 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
             }
         }
 
+        evidenziaUltimoMovimento();
+
         if (rigaSelezionata != -1 && colonnaSelezionata != -1 && !finito) {
             labels[rigaSelezionata][colonnaSelezionata].setBackground(COLORE_SELEZIONE);
             evidenziaMossePossibili(rigaSelezionata, colonnaSelezionata);
@@ -122,6 +131,41 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
             stato.setForeground(Color.BLACK);
             stato.setText("Turno: " + nomeColore(partita.isAttaccaBianco()));
         }
+    }
+
+    private void evidenziaUltimoMovimento() {
+        if (!mostraUltimoMovimento) return;
+
+        if (coordinateMovimentoValide(rigaMovimentoPartenza, colonnaMovimentoPartenza)) {
+            labels[rigaMovimentoPartenza][colonnaMovimentoPartenza].setBackground(COLORE_MOVIMENTO);
+            labels[rigaMovimentoPartenza][colonnaMovimentoPartenza].setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        }
+
+        if (coordinateMovimentoValide(rigaMovimentoArrivo, colonnaMovimentoArrivo)) {
+            labels[rigaMovimentoArrivo][colonnaMovimentoArrivo].setBackground(COLORE_MOVIMENTO);
+            labels[rigaMovimentoArrivo][colonnaMovimentoArrivo].setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        }
+    }
+
+    private boolean coordinateMovimentoValide(int riga, int colonna) {
+        return riga >= 0 && riga < DIMENSIONE_SCACCHIERA
+                && colonna >= 0 && colonna < DIMENSIONE_SCACCHIERA;
+    }
+
+    private void salvaUltimoMovimento(int rigaPartenza, int colonnaPartenza, int rigaArrivo, int colonnaArrivo) {
+        rigaMovimentoPartenza = rigaPartenza;
+        colonnaMovimentoPartenza = colonnaPartenza;
+        rigaMovimentoArrivo = rigaArrivo;
+        colonnaMovimentoArrivo = colonnaArrivo;
+        mostraUltimoMovimento = true;
+    }
+
+    private void nascondiUltimoMovimento() {
+        mostraUltimoMovimento = false;
+        rigaMovimentoPartenza = -1;
+        colonnaMovimentoPartenza = -1;
+        rigaMovimentoArrivo = -1;
+        colonnaMovimentoArrivo = -1;
     }
 
     private void evidenziaMossePossibili(int riga, int colonna) {
@@ -227,6 +271,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
             return;
         }
 
+        nascondiUltimoMovimento();
         rigaSelezionata = riga;
         colonnaSelezionata = colonna;
         aggiornaGrafica();
@@ -247,9 +292,11 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
                 }
 
                 partita.arrocca(latoLungo);
+                salvaUltimoMovimento(rigaSelezionata, colonnaSelezionata, rigaArrivo, colonnaArrivo);
             } else {
                 partita.muoviPezzo(rigaSelezionata, colonnaSelezionata, rigaArrivo, colonnaArrivo);
                 dopoMossaNormale(pezzo);
+                salvaUltimoMovimento(rigaSelezionata, colonnaSelezionata, rigaArrivo, colonnaArrivo);
             }
 
             deseleziona();
@@ -281,6 +328,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
             public void actionPerformed(ActionEvent e) {
                 try {
                     partita.muoviPezzoConBot(false);
+                    nascondiUltimoMovimento();
                     aggiornaGrafica();
                     controllaFine(false);
                 } catch (RuntimeException ex) {
