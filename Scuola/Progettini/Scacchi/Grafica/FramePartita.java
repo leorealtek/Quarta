@@ -25,6 +25,7 @@ public class FramePartita extends FrameScacchiAstratto {
         this.partitaNormale = partita;
         this.salvaPartita = new JButton("Salva partita");
         aggiungiPulsanteSalvaPartita();
+        aggiungiControlloChiusura();
     }
 
     private void aggiungiPulsanteSalvaPartita() {
@@ -35,21 +36,7 @@ public class FramePartita extends FrameScacchiAstratto {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    File cartella = new File("Scuola/Progettini/Scacchi/FilePartite");
-
-                    if (!cartella.exists()) {
-                        cartella.mkdirs();
-                    }
-
-                    int numero = 1;
-                    File fileDaSalvare;
-
-                    do {
-                        fileDaSalvare = new File(cartella, "Partita" + numero + ".txt");
-                        numero++;
-                    } while (fileDaSalvare.exists());
-
-                    partitaNormale.salvaSuFile(fileDaSalvare.getPath());
+                    File fileDaSalvare = partitaNormale.salvaPartitaReale();
 
                     JOptionPane.showMessageDialog(
                         FramePartita.this,
@@ -108,12 +95,30 @@ public class FramePartita extends FrameScacchiAstratto {
         repaint();
     }
 
+    private void aggiungiControlloChiusura() {
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                partitaNormale.eliminaTemporaneiSeNonSalvata();
+                System.exit(0);
+            }
+        });
+    }
+
     @Override
     protected void controllaFine(boolean coloreCheHaMosso) {
         String risultato = partitaNormale.checkWin();
 
         if (partitaNormale.pattaPerMosse()) {
             finisciConMessaggio("Patta per la regola delle 50 mosse");
+            return;
+        }
+
+        if (partitaNormale.pattaPerRipetizione()) {
+            finisciConMessaggio("Patta per triplice ripetizione");
+            return;
         }
 
         if (risultato.equals("Nessuno")) {

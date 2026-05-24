@@ -1,8 +1,8 @@
-t c a d r a c t
+t c a d r a . t
 p p p p p p p p
-. . . . . . . .
-. . . . . . . .
+. . . . . c . .
 . . . . P . . .
+. . . . . . . .
 . . . . . . . .
 P P P P . P P P
 T C A D R A C T

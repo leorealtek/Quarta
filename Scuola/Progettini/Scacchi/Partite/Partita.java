@@ -10,8 +10,16 @@ import java.util.Scanner;
 public class Partita extends PartitaAstratta {
 
     private int ultimaMossaPerPatta;
+
     private String percorsoDirectoryPartita = null;
     private int numeroFileMossa = 0;
+    private int numeroPartita = -1;
+    private boolean partitaSalvata = false;
+    private boolean salvataggioRealeEsistente = false;
+    private int primaMossaTemporaneaNonSalvata = 0;
+
+    private static final String CARTELLA_PARTITE = "Scuola/Progettini/Scacchi/FilePartite";
+    private static final String CARTELLA_TEMPORANEI = "Scuola/Progettini/Scacchi/FilePartite/FileTemporanei";
 
     public Partita() {
         super();
@@ -19,12 +27,13 @@ public class Partita extends PartitaAstratta {
         salvaPerOgniRound();
     }
 
-    public Partita(String percorsoFile) throws IOException{
+    public Partita(String percorsoFile) throws IOException {
         caricaMappaDaFile(percorsoFile);
-    }
+        collegaTemporaneiAlFileReale(percorsoFile);
 
-    public Partita(Casella[][] mappa, boolean attaccaBianco) {
-        super(mappa, attaccaBianco);
+        partitaSalvata = true;
+        salvataggioRealeEsistente = true;
+        primaMossaTemporaneaNonSalvata = numeroFileMossa;
     }
 
     private void inizializzaPartitaStandard() {
@@ -377,8 +386,181 @@ public class Partita extends PartitaAstratta {
         return false;
     }
 
+
+    public boolean pattaPerRipetizione() {
+        if (percorsoDirectoryPartita == null) {
+            return false;
+        }
+
+        File cartellaPartita = new File(percorsoDirectoryPartita);
+        File[] fileMosse = cartellaPartita.listFiles();
+
+        if (fileMosse == null) {
+            return false;
+        }
+
+        String posizioneAttuale = creaChiavePosizioneAttuale();
+        int ripetizioni = 0;
+
+        for (int i = 0; i < fileMosse.length; i++) {
+            File file = fileMosse[i];
+
+            if (file.getName().startsWith("Mossa") && file.getName().endsWith(".txt")) {
+                try {
+                    String posizioneLetta = leggiChiavePosizioneDaFile(file);
+
+                    if (posizioneAttuale.equals(posizioneLetta)) {
+                        ripetizioni++;
+                    }
+                } catch (Exception e) {
+                }
+            }
+        }
+
+        return ripetizioni >= 3;
+    }
+
+    private void salvaSuFileTemporaneo(String percorsoFile) throws IOException {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(percorsoFile))) {
+            for (int i = 0; i < mappa.length; i++) {
+                for (int j = 0; j < mappa[i].length; j++) {
+                    Casella casella = mappa[i][j];
+
+                    if (casella != null && casella.getPezzoContenuto() != null) {
+                        writer.print(casella.getPezzoContenuto().getNome());
+                    } else {
+                        writer.print(".");
+                    }
+
+                    if (j < mappa[i].length - 1) {
+                        writer.print(" ");
+                    }
+                }
+                writer.println();
+            }
+
+            writer.println(attaccaBianco ? "BIANCO" : "NERO");
+            writer.println(getEnPassantPerRipetizione());
+            writer.println(getArroccoPerRipetizione());
+        }
+    }
+
+    private String creaChiavePosizioneAttuale() {
+        String chiave = "";
+
+        for (int i = 0; i < mappa.length; i++) {
+            for (int j = 0; j < mappa[i].length; j++) {
+                Casella casella = mappa[i][j];
+
+                if (casella != null && casella.getPezzoContenuto() != null) {
+                    chiave += casella.getPezzoContenuto().getNome();
+                } else {
+                    chiave += ".";
+                }
+            }
+
+            chiave += "/";
+        }
+
+        if (attaccaBianco) {
+            chiave += "BIANCO";
+        } else {
+            chiave += "NERO";
+        }
+
+        chiave += "/";
+        chiave += getEnPassantPerRipetizione();
+        chiave += "/";
+        chiave += getArroccoPerRipetizione();
+
+        return chiave;
+    }
+
+    private String leggiChiavePosizioneDaFile(File file) throws IOException {
+        try (Scanner scanner = new Scanner(file)) {
+            String chiave = "";
+
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    chiave += scanner.next();
+                }
+
+                chiave += "/";
+            }
+
+            String turno = scanner.next();
+            int rigaEnPassant = scanner.nextInt();
+            int colonnaEnPassant = scanner.nextInt();
+
+            String arrocco = "";
+
+            for (int i = 0; i < 6; i++) {
+                arrocco += scanner.next();
+
+                if (i < 5) {
+                    arrocco += " ";
+                }
+            }
+
+            chiave += turno + "/";
+            chiave += rigaEnPassant + " " + colonnaEnPassant + "/";
+            chiave += arrocco;
+
+            return chiave;
+        }
+    }
+
+    private String getEnPassantPerRipetizione() {
+        if (pedoneEnPassant == null || !esisteCatturaEnPassantPossibile()) {
+            return "-1 -1";
+        }
+
+        return pedoneEnPassant.getRiga() + " " + pedoneEnPassant.getColonna();
+    }
+
+    private boolean esisteCatturaEnPassantPossibile() {
+        int rigaPedone = pedoneEnPassant.getRiga();
+        int colonnaPedone = pedoneEnPassant.getColonna();
+        int rigaArrivo;
+
+        if (attaccaBianco) {
+            rigaArrivo = rigaPedone - 1;
+        } else {
+            rigaArrivo = rigaPedone + 1;
+        }
+
+        if (rigaArrivo < 0 || rigaArrivo >= 8) {
+            return false;
+        }
+
+        int[] spostamenti = {-1, 1};
+
+        for (int i = 0; i < spostamenti.length; i++) {
+            int colonnaPedoneCheCattura = colonnaPedone + spostamenti[i];
+
+            if (colonnaPedoneCheCattura >= 0 && colonnaPedoneCheCattura < 8) {
+                Pezzo pezzo = mappa[rigaPedone][colonnaPedoneCheCattura].getPezzoContenuto();
+
+                if (pezzo instanceof Pedone && pezzo.isBianco() == attaccaBianco) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private String getArroccoPerRipetizione() {
+        return reHaMosso(true) + " "
+                + torreHaMosso(true, true) + " "
+                + torreHaMosso(true, false) + " "
+                + reHaMosso(false) + " "
+                + torreHaMosso(false, true) + " "
+                + torreHaMosso(false, false);
+    }
+
     private void salvaPerOgniRound() {
-        File cartellaPrincipale = new File("Scuola/Progettini/Scacchi/FilePartite/FileTemporanei");
+        File cartellaPrincipale = new File(CARTELLA_TEMPORANEI);
 
         try {
             if (!cartellaPrincipale.exists()) {
@@ -386,14 +568,15 @@ public class Partita extends PartitaAstratta {
             }
 
             if (percorsoDirectoryPartita == null) {
-                int numeroPartita = trovaProssimoNumeroPartita(cartellaPrincipale);
-                File cartellaPartita = new File(cartellaPrincipale, "Partita" + numeroPartita);
+                numeroPartita = trovaProssimoNumeroPartita();
+                File cartellaPartita = new File(cartellaPrincipale + "/Partita" + numeroPartita);
                 cartellaPartita.mkdirs();
                 percorsoDirectoryPartita = cartellaPartita.getPath();
+                numeroFileMossa = 0;
             }
 
-            File fileMossa = new File(percorsoDirectoryPartita, "Mossa" + numeroFileMossa + ".txt");
-            salvaSuFile(fileMossa.getPath());
+            File fileMossa = new File(percorsoDirectoryPartita + "/Mossa" + numeroFileMossa + ".txt");
+            salvaSuFileTemporaneo(fileMossa.getPath());
             numeroFileMossa++;
 
         } catch (Exception e) {
@@ -401,43 +584,177 @@ public class Partita extends PartitaAstratta {
         }
     }
 
-    private int trovaProssimoNumeroPartita(File cartellaPrincipale) {
-        int numeroPartita = 1;
-        File[] elencoCartelle = cartellaPrincipale.listFiles();
+    private void collegaTemporaneiAlFileReale(String percorsoFile) throws IOException {
+        File fileReale = new File(percorsoFile);
+        numeroPartita = leggiNumeroPartitaDaNome(fileReale.getName());
 
-        if (elencoCartelle == null) {
-            return numeroPartita;
+        File cartellaTemporanei = new File(CARTELLA_TEMPORANEI);
+        if (!cartellaTemporanei.exists()) {
+            cartellaTemporanei.mkdirs();
         }
 
-        for (File cartella : elencoCartelle) {
-            if (!cartella.isDirectory()) {
+        File cartellaPartita = new File(cartellaTemporanei, "Partita" + numeroPartita);
+        if (!cartellaPartita.exists()) {
+            cartellaPartita.mkdirs();
+            percorsoDirectoryPartita = cartellaPartita.getPath();
+            numeroFileMossa = 0;
+            salvaPerOgniRound();
+            return;
+        }
+
+        percorsoDirectoryPartita = cartellaPartita.getPath();
+        numeroFileMossa = trovaProssimoNumeroMossa(cartellaPartita);
+    }
+
+
+private int trovaProssimoNumeroPartita() {
+        int numero = 1;
+
+        while (true) {
+            File fileReale = new File(CARTELLA_PARTITE, "Partita" + numero + ".txt");
+            File cartellaTemporanea = new File(CARTELLA_TEMPORANEI, "Partita" + numero);
+
+            if (!fileReale.exists() && !cartellaTemporanea.exists()) {
+                return numero;
+            }
+
+            numero++;
+        }
+    }
+
+    private int trovaProssimoNumeroMossa(File cartellaPartita) {
+        int prossimo = 0;
+        File[] fileMosse = cartellaPartita.listFiles();
+
+        if (fileMosse == null) {
+            return prossimo;
+        }
+
+        for (File file : fileMosse) {
+            if (!file.isFile()) {
                 continue;
             }
 
-            String nome = cartella.getName();
-
-            if (!nome.startsWith("Partita")) {
+            String nome = file.getName();
+            if (!nome.startsWith("Mossa") || !nome.endsWith(".txt")) {
                 continue;
             }
 
             try {
-                int numero = Integer.parseInt(nome.substring("Partita".length()));
-
-                if (numero >= numeroPartita) {
-                    numeroPartita = numero + 1;
+                int n = Integer.parseInt(nome.substring("Mossa".length(), nome.length() - ".txt".length()));
+                if (n >= prossimo) {
+                    prossimo = n + 1;
                 }
-            } catch (NumberFormatException e) {
-                // Ignora cartelle tipo "PartitaVecchia" o nomi non numerici
+            } catch (NumberFormatException ignored) {
             }
         }
 
-        return numeroPartita;
+        return prossimo;
+    }
+
+    private int leggiNumeroPartitaDaNome(String nomeFile) {
+        if (!nomeFile.startsWith("Partita") || !nomeFile.endsWith(".txt")) {
+            return trovaProssimoNumeroPartita();
+        }
+
+        try {
+            return Integer.parseInt(nomeFile.substring("Partita".length(), nomeFile.length() - ".txt".length()));
+        } catch (NumberFormatException e) {
+            return trovaProssimoNumeroPartita();
+        }
+    }
+
+    public File salvaPartitaReale() throws IOException {
+        File cartella = new File(CARTELLA_PARTITE);
+        if (!cartella.exists()) {
+            cartella.mkdirs();
+        }
+
+        if (numeroPartita < 1) {
+            numeroPartita = trovaProssimoNumeroPartita();
+        }
+
+        File fileDaSalvare = new File(cartella, "Partita" + numeroPartita + ".txt");
+        salvaSuFile(fileDaSalvare.getPath());
+
+        partitaSalvata = true;
+        salvataggioRealeEsistente = true;
+
+        primaMossaTemporaneaNonSalvata = numeroFileMossa;
+
+        return fileDaSalvare;
+    }
+
+    public void eliminaTemporaneiSeNonSalvata() {
+        if (partitaSalvata) {
+            return;
+        }
+
+        if (percorsoDirectoryPartita == null) {
+            return;
+        }
+
+        File cartellaPartita = new File(percorsoDirectoryPartita);
+
+        if (!salvataggioRealeEsistente) {
+            eliminaCartella(cartellaPartita);
+            return;
+        }
+
+        eliminaMosseTemporaneeDa(cartellaPartita, primaMossaTemporaneaNonSalvata);
+    }
+
+    private void eliminaMosseTemporaneeDa(File cartellaPartita, int numeroIniziale) {
+        File[] fileMosse = cartellaPartita.listFiles();
+        if (fileMosse == null) {
+            return;
+        }
+
+        for (File file : fileMosse) {
+            if (!file.isFile()) {
+                continue;
+            }
+
+            String nome = file.getName();
+            if (!nome.startsWith("Mossa") || !nome.endsWith(".txt")) {
+                continue;
+            }
+
+            try {
+                int numero = Integer.parseInt(nome.substring("Mossa".length(), nome.length() - ".txt".length()));
+                if (numero >= numeroIniziale) {
+                    file.delete();
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        numeroFileMossa = trovaProssimoNumeroMossa(cartellaPartita);
+    }
+
+    private void eliminaCartella(File file) {
+        if (file == null || !file.exists()) {
+            return;
+        }
+
+        if (file.isDirectory()) {
+            File[] contenuto = file.listFiles();
+            if (contenuto != null) {
+                for (File f : contenuto) {
+                    eliminaCartella(f);
+                }
+            }
+        }
+
+        file.delete();
     }
 
     @Override
     protected void dopoMossa(boolean coloreCheHaMosso) {
         mosse++;
         salvaPerOgniRound();
+
+        partitaSalvata = false;
     }
 
     public int getMosse() {

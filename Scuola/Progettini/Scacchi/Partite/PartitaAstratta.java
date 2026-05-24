@@ -24,13 +24,6 @@ public abstract class PartitaAstratta {
         pedoneEnPassant = null;
     }
 
-    public PartitaAstratta(Casella[][] mappa, boolean attaccaBianco) {
-        validaMappa(mappa);
-        this.mappa = mappa;
-        this.attaccaBianco = attaccaBianco;
-        this.pedoneEnPassant = null;
-    }
-
     protected void inizializzaCaselleVuote() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {

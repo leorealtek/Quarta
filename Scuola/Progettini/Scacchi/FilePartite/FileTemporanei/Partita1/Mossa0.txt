@@ -7,7 +7,5 @@ p p p p p p p p
 P P P P P P P P
 T C A D R A C T
 BIANCO
-0
-ULTIMA_MOSSA_PATTA 0
-EN_PASSANT -1 -1
-ARROCCO false false false false false false
+-1 -1
+false false false false false false

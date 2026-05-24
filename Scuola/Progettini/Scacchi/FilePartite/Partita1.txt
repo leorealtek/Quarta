@@ -1,13 +1,13 @@
-t c a d r a c t
+t c a d r a . t
 p p p p p p p p
-. . . . . . . .
-. . . . . . . .
+. . . . . c . .
 . . . . P . . .
+. . . . . . . .
 . . . . . . . .
 P P P P . P P P
 T C A D R A C T
 NERO
-1
-ULTIMA_MOSSA_PATTA 0
-EN_PASSANT 4 4
+3
+ULTIMA_MOSSA_PATTA 2
+EN_PASSANT -1 -1
 ARROCCO false false false false false false
