@@ -287,6 +287,16 @@ public class Partita extends PartitaAstratta {
                         Boolean.parseBoolean(parti[6])
                     );
                 }
+
+                else if (parti[0].equals("BOT")) {
+                    if (parti.length == 2) {
+                        bot.setPartita(null);
+                    }
+
+                    else if (parti[1].equals("true")) {
+                        bot = new Bot(Integer.parseInt(parti[3]));
+                    }
+                }
             }
 
             validaRePresenti();
@@ -332,6 +342,8 @@ public class Partita extends PartitaAstratta {
                 + torreHaMosso(false, true) + " "
                 + torreHaMosso(false, false)
             );
+            boolean conBot = (bot == null) ? false : true;
+            writer.println("BOT " + conBot + ((conBot) ? " " + bot.getProfondita() : ""));
         }
     }
 

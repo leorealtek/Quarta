@@ -519,4 +519,8 @@ public class Bot {
     public void setPartita(PartitaAstratta partita) {
         this.partita = partita;
     }
+
+    public int getProfondita() {
+        return profondita;
+    }
 }

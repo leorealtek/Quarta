@@ -21,7 +21,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
     protected static final Color COLORE_CATTURA = new Color(220, 80, 80);
     protected static final Color COLORE_ERRORE = new Color(220, 80, 80);
     protected static final Color COLORE_ARROCCO = new Color(120, 170, 230);
-    protected static final Color COLORE_MOVIMENTO = new Color(246, 246, 105);
+    protected static final Color COLORE_MOVIMENTO = new Color(189, 189, 79);
 
     protected final JLabel[][] labels;
     protected final PartitaAstratta partita;
@@ -35,7 +35,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
     protected int colonnaMovimentoPartenza = -1;
     protected int rigaMovimentoArrivo = -1;
     protected int colonnaMovimentoArrivo = -1;
-    protected boolean mostraUltimoMovimento = false;
+    protected boolean mostraUltimoMovimento = true;
 
     protected boolean erroreVisibile = false;
     protected boolean finito = false;
@@ -160,14 +160,6 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         mostraUltimoMovimento = true;
     }
 
-    private void nascondiUltimoMovimento() {
-        mostraUltimoMovimento = false;
-        rigaMovimentoPartenza = -1;
-        colonnaMovimentoPartenza = -1;
-        rigaMovimentoArrivo = -1;
-        colonnaMovimentoArrivo = -1;
-    }
-
     private void evidenziaMossePossibili(int riga, int colonna) {
         Pezzo pezzo = partita.getMappa()[riga][colonna].getPezzoContenuto();
         if (pezzo == null) return;
@@ -271,7 +263,6 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
             return;
         }
 
-        nascondiUltimoMovimento();
         rigaSelezionata = riga;
         colonnaSelezionata = colonna;
         aggiornaGrafica();
@@ -328,7 +319,6 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
             public void actionPerformed(ActionEvent e) {
                 try {
                     partita.muoviPezzoConBot(false);
-                    nascondiUltimoMovimento();
                     aggiornaGrafica();
                     controllaFine(false);
                 } catch (RuntimeException ex) {
