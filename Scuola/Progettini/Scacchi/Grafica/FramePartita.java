@@ -20,6 +20,14 @@ public class FramePartita extends FrameScacchiAstratto {
         this(new Partita(percorsoFile), conBot);
     }
 
+    public FramePartita(String percorsoFile) throws IOException {
+        this(new Partita(percorsoFile));
+    }
+
+    private FramePartita(Partita partita) {
+        this(partita, partita.isConBot());
+    }
+
     private FramePartita(Partita partita, boolean conBot) {
         super("Scacchi", partita, conBot);
         this.partitaNormale = partita;

@@ -163,6 +163,30 @@ public class Bot {
         return minPoint;
     }
 
+    private boolean isScaccoMatto(Casella[][] scacchiera, Pedone pedoneEnPassant, boolean coloreDaControllare) {
+        Casella[][] mappaPrecedente = partita.getMappa();
+        Pedone pedoneEnPassantPrecedente = partita.getPedoneEnPassant();
+
+        partita.setMappa(scacchiera);
+        partita.setPedoneEnPassant(pedoneEnPassant);
+
+        try {
+            ArrayList<Pedone> enPassantMosse = new ArrayList<>();
+            boolean sottoScacco = partita.isSottoScacco(coloreDaControllare);
+            boolean haMosse = !creaTutteMosseDisponibili(
+                    scacchiera,
+                    pedoneEnPassant,
+                    coloreDaControllare,
+                    enPassantMosse
+            ).isEmpty();
+
+            return sottoScacco && !haMosse;
+        } finally {
+            partita.setMappa(mappaPrecedente);
+            partita.setPedoneEnPassant(pedoneEnPassantPrecedente);
+        }
+    }
+
     public Casella[][] trovaPosizioneMigliore(boolean toccaBianco) {
         if (partita == null) {
             throw new IllegalStateException("Devi prima chiamare setPartita(partita)");
@@ -180,6 +204,16 @@ public class Bot {
 
         if (mosse.isEmpty()) {
             return partita.getMappa();
+        }
+
+        for (int i = 0; i < mosse.size(); i++) {
+            Casella[][] scacchiera = mosse.get(i);
+            Pedone enPassant = enPassantMosse.get(i);
+
+            if (isScaccoMatto(scacchiera, enPassant, !toccaBianco)) {
+                pedoneEnPassantMigliore = enPassant;
+                return scacchiera;
+            }
         }
 
         Casella[][] migliore = null;

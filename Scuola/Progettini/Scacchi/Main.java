@@ -23,7 +23,6 @@ public class Main {
         return scelta;
     }
 
-
     private static boolean scegliConBot() {
         int sceltaBot = mostraDialogPerScelta(
             "Modalità partita",
@@ -151,13 +150,7 @@ public class Main {
 
                 int indiceFile = tendinaPartite.getSelectedIndex();
 
-                boolean conBot = scegliConBot();
-                FramePartita fp = new FramePartita(files.get(indiceFile).getAbsolutePath(), conBot);
-                if (conBot) {
-                    int difficoltaBot = scegliDifficoltaBot();
-                    Bot bot = new Bot(difficoltaBot);
-                    fp.getPartita().setBot(bot);
-                }
+                FramePartita fp = new FramePartita(files.get(indiceFile).getAbsolutePath());
                 fp.avviaFrame();
                 
             }

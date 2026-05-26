@@ -289,12 +289,32 @@ public class Partita extends PartitaAstratta {
                 }
 
                 else if (parti[0].equals("BOT")) {
-                    if (parti.length == 2) {
-                        bot.setPartita(null);
+                    if (parti.length < 2 || parti.length > 3) {
+                        throw new FileNonValidoException("Riga BOT non valida.");
+                    }
+
+                    if (parti[1].equals("false")) {
+                        if (parti.length != 2) {
+                            throw new FileNonValidoException("Riga BOT non valida.");
+                        }
+
+                        bot = null;
                     }
 
                     else if (parti[1].equals("true")) {
-                        bot = new Bot(Integer.parseInt(parti[3]));
+                        if (parti.length != 3) {
+                            throw new FileNonValidoException("Difficoltà BOT mancante.");
+                        }
+
+                        try {
+                            setBot(new Bot(Integer.parseInt(parti[2])));
+                        } catch (NumberFormatException e) {
+                            throw new FileNonValidoException("Difficoltà BOT non valida.");
+                        }
+                    }
+
+                    else {
+                        throw new FileNonValidoException("Valore BOT non valido.");
                     }
                 }
             }
@@ -771,6 +791,10 @@ private int trovaProssimoNumeroPartita() {
 
     public int getMosse() {
         return mosse + 1;
+    }
+ 
+    public boolean isConBot() {
+        return bot != null;
     }
 
 }

@@ -318,7 +318,11 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    char[][] mappaPrima = copiaNomiPezzi();
+
                     partita.muoviPezzoConBot(false);
+                    salvaUltimoMovimentoBot(mappaPrima, false);
+
                     aggiornaGrafica();
                     controllaFine(false);
                 } catch (RuntimeException ex) {
@@ -331,6 +335,90 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         timerBot.start();
     }
 
+    private char[][] copiaNomiPezzi() {
+        char[][] copia = new char[DIMENSIONE_SCACCHIERA][DIMENSIONE_SCACCHIERA];
+        Casella[][] mappa = partita.getMappa();
+
+        for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
+            for (int colonna = 0; colonna < DIMENSIONE_SCACCHIERA; colonna++) {
+                Pezzo pezzo = mappa[riga][colonna].getPezzoContenuto();
+                copia[riga][colonna] = pezzo == null ? '.' : pezzo.getNome();
+            }
+        }
+
+        return copia;
+    }
+
+    private void salvaUltimoMovimentoBot(char[][] mappaPrima, boolean botBianco) {
+        if (salvaArroccoBotSePresente(mappaPrima, botBianco)) {
+            return;
+        }
+
+        Casella[][] mappaDopo = partita.getMappa();
+        int rigaPartenza = -1;
+        int colonnaPartenza = -1;
+        int rigaArrivo = -1;
+        int colonnaArrivo = -1;
+
+        for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
+            for (int colonna = 0; colonna < DIMENSIONE_SCACCHIERA; colonna++) {
+                char prima = mappaPrima[riga][colonna];
+                Pezzo pezzoDopo = mappaDopo[riga][colonna].getPezzoContenuto();
+                char dopo = pezzoDopo == null ? '.' : pezzoDopo.getNome();
+
+                if (prima != '.' && isColorePezzo(prima, botBianco) && prima != dopo) {
+                    rigaPartenza = riga;
+                    colonnaPartenza = colonna;
+                }
+
+                if (dopo != '.' && isColorePezzo(dopo, botBianco) && prima != dopo) {
+                    rigaArrivo = riga;
+                    colonnaArrivo = colonna;
+                }
+            }
+        }
+
+        if (coordinateMovimentoValide(rigaPartenza, colonnaPartenza)
+                && coordinateMovimentoValide(rigaArrivo, colonnaArrivo)) {
+            salvaUltimoMovimento(rigaPartenza, colonnaPartenza, rigaArrivo, colonnaArrivo);
+        }
+    }
+
+    private boolean salvaArroccoBotSePresente(char[][] mappaPrima, boolean botBianco) {
+        int rigaRe = botBianco ? 7 : 0;
+        char re = botBianco ? 'R' : 'r';
+        char torre = botBianco ? 'T' : 't';
+        Casella[][] mappaDopo = partita.getMappa();
+
+        if (mappaPrima[rigaRe][4] != re) {
+            return false;
+        }
+
+        if (mappaPrima[rigaRe][7] == torre
+                && pezzoInCasella(mappaDopo, rigaRe, 6, re)
+                && pezzoInCasella(mappaDopo, rigaRe, 5, torre)) {
+            salvaUltimoMovimento(rigaRe, 4, rigaRe, 6);
+            return true;
+        }
+
+        if (mappaPrima[rigaRe][0] == torre
+                && pezzoInCasella(mappaDopo, rigaRe, 2, re)
+                && pezzoInCasella(mappaDopo, rigaRe, 3, torre)) {
+            salvaUltimoMovimento(rigaRe, 4, rigaRe, 2);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean pezzoInCasella(Casella[][] mappa, int riga, int colonna, char nome) {
+        Pezzo pezzo = mappa[riga][colonna].getPezzoContenuto();
+        return pezzo != null && pezzo.getNome() == nome;
+    }
+
+    private boolean isColorePezzo(char nome, boolean bianco) {
+        return bianco ? Character.isUpperCase(nome) : Character.isLowerCase(nome);
+    }
 
     protected abstract void aggiornaInfoExtra();
 
