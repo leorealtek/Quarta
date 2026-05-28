@@ -11,15 +11,27 @@ import Scuola.Progettini.Scacchi.Pezzi.Re;
 import Scuola.Progettini.Scacchi.Pezzi.Regina;
 import Scuola.Progettini.Scacchi.Pezzi.Torre;
 
+/**
+ * Bot degli scacchi basato su minimax con potatura alfa-beta. Genera le mosse legali, valuta le posizioni e sceglie la posizione migliore.
+ */
 public class Bot {
     private int profondita;
     private PartitaAstratta partita;
     private Pedone pedoneEnPassantMigliore;
 
+    /**
+     * Crea un bot con la profondità di ricerca indicata.
+     * @param profondita numero di mezze mosse da analizzare con minimax
+     */
     public Bot(int profondita) {
         this.profondita = profondita;
     }
 
+    /**
+     * Valuta materialmente e posizionalmente una scacchiera: valori positivi favoriscono il bianco, negativi il nero.
+     * @param scacchiera posizione da valutare
+     * @return punteggio della posizione
+     */
     private double valutaPosizione(Casella[][] scacchiera) {
         double valore = 0;
 
@@ -58,6 +70,13 @@ public class Bot {
         return valore;
     }
 
+    /**
+     * Valuta una posizione terminale o di profondità massima considerando anche scacco matto e stallo.
+     * @param scacchiera posizione da valutare
+     * @param pedoneEnPassant pedone eventualmente catturabile en passant
+     * @param toccaBianco colore che dovrebbe muovere
+     * @return punteggio finale della posizione
+     */
     private double valutaPosizioneFinale(Casella[][] scacchiera, Pedone pedoneEnPassant, boolean toccaBianco) {
         Casella[][] mappaPrecedente = partita.getMappa();
         Pedone pedoneEnPassantPrecedente = partita.getPedoneEnPassant();
@@ -90,6 +109,16 @@ public class Bot {
         }
     }
 
+    /**
+     * Applica minimax con potatura alfa-beta per stimare il valore migliore raggiungibile dalla posizione.
+     * @param scacchiera posizione corrente
+     * @param pedoneEnPassant stato en passant corrente
+     * @param profondita profondità ancora da esplorare
+     * @param alpha miglior valore già garantito al massimizzatore
+     * @param beta miglior valore già garantito al minimizzatore
+     * @param toccaBianco true se tocca al bianco
+     * @return valore minimax della posizione
+     */
     private double minimax(
             Casella[][] scacchiera,
             Pedone pedoneEnPassant,
@@ -163,6 +192,13 @@ public class Bot {
         return minPoint;
     }
 
+    /**
+     * Controlla se nella posizione simulata il colore indicato è in scacco matto.
+     * @param scacchiera posizione simulata
+     * @param pedoneEnPassant stato en passant simulato
+     * @param coloreDaControllare colore di cui controllare il matto
+     * @return true se è scacco matto
+     */
     private boolean isScaccoMatto(Casella[][] scacchiera, Pedone pedoneEnPassant, boolean coloreDaControllare) {
         Casella[][] mappaPrecedente = partita.getMappa();
         Pedone pedoneEnPassantPrecedente = partita.getPedoneEnPassant();
@@ -187,6 +223,11 @@ public class Bot {
         }
     }
 
+    /**
+     * Cerca e restituisce la posizione migliore per il colore che deve muovere, dando priorità al matto immediato.
+     * @param toccaBianco true se deve muovere il bianco, false se deve muovere il nero
+     * @return mappa risultante dalla mossa scelta dal bot
+     */
     public Casella[][] trovaPosizioneMigliore(boolean toccaBianco) {
         if (partita == null) {
             throw new IllegalStateException("Devi prima chiamare setPartita(partita)");
@@ -267,6 +308,12 @@ public class Bot {
         return migliore;
     }
 
+    /**
+     * Crea una copia indipendente di un pezzo mantenendo tipo, colore, posizione e stati speciali.
+     * @param p pezzo da copiare
+     * @param nuovaMappa mappa a cui il pezzo copiato farà riferimento
+     * @return copia del pezzo, oppure null
+     */
     private Pezzo copiaPezzo(Pezzo p, Casella[][] nuovaMappa) {
         char nome = p.getNome();
         int riga = p.getRiga();
@@ -306,6 +353,11 @@ public class Bot {
         throw new IllegalArgumentException("Pezzo non valido: " + nome);
     }
 
+    /**
+     * Crea una copia profonda della scacchiera per simulare mosse senza modificare la partita reale.
+     * @param originale mappa da copiare
+     * @return nuova mappa indipendente
+     */
     private Casella[][] copiaMappa(Casella[][] originale) {
         Casella[][] copia = new Casella[8][8];
 
@@ -324,6 +376,12 @@ public class Bot {
         return copia;
     }
 
+    /**
+     * Promuove automaticamente a regina un pedone arrivato in fondo durante le simulazioni del bot.
+     * @param scacchiera mappa simulata
+     * @param riga riga del pedone
+     * @param colonna colonna del pedone
+     */
     private void promuoviPedoneAutomaticamente(Casella[][] scacchiera, int riga, int colonna) {
         Pezzo pezzo = scacchiera[riga][colonna].getPezzoContenuto();
 
@@ -339,6 +397,13 @@ public class Bot {
         scacchiera[riga][colonna].inserisciPezzo(new Regina(nomeRegina, riga, colonna, scacchiera));
     }
 
+    /**
+     * Verifica se un arrocco è legale dentro una posizione simulata dal bot.
+     * @param scacchiera mappa simulata
+     * @param bianco true per il bianco, false per il nero
+     * @param latoLungo true per arrocco lungo, false per arrocco corto
+     * @return true se l'arrocco simulato è legale
+     */
     private boolean arroccoLegaleBot(Casella[][] scacchiera, boolean bianco, boolean latoLungo) {
         int rigaRe = bianco ? 7 : 0;
 
@@ -395,6 +460,9 @@ public class Bot {
         return true;
     }
 
+    /**
+     * Aggiunge alle mosse simulate anche l'arrocco, quando è legale nella posizione analizzata.
+     */
     private void aggiungiArroccoSePossibile(
             Casella[][] scacchiera,
             boolean toccaBianco,
@@ -440,6 +508,14 @@ public class Bot {
         enPassantMosse.add(null);
     }
 
+    /**
+     * Genera tutte le mosse legali del colore indicato in una posizione simulata, includendo en passant e arrocco.
+     * @param scacchiera posizione da cui generare le mosse
+     * @param pedoneEnPassant pedone eventualmente catturabile en passant
+     * @param toccaBianco colore che deve muovere
+     * @param enPassantMosse lista parallela in cui salvare lo stato en passant di ogni mossa
+     * @return lista delle mappe raggiungibili con mosse legali
+     */
     private List<Casella[][]> creaTutteMosseDisponibili(
             Casella[][] scacchiera,
             Pedone pedoneEnPassant,
@@ -550,6 +626,10 @@ public class Bot {
         return pedoneEnPassantMigliore;
     }
 
+    /**
+     * Collega il bot alla partita su cui deve lavorare.
+     * @param partita partita corrente
+     */
     public void setPartita(PartitaAstratta partita) {
         this.partita = partita;
     }

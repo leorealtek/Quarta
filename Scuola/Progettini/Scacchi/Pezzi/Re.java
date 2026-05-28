@@ -2,6 +2,9 @@ package Scuola.Progettini.Scacchi.Pezzi;
 
 import Scuola.Progettini.Scacchi.Util.*;
 
+/**
+ * Rappresenta il re e conserva lo stato necessario per stabilire se può arroccare.
+ */
 public class Re extends Pezzo {
 
     private boolean haMosso;
@@ -12,17 +15,30 @@ public class Re extends Pezzo {
                       || (!isBianco && riga == 0 && colonna == 4));
     }
 
+    /**
+     * Restituisce il valore del pezzo usato nella valutazione del bot.
+     * @return valore molto alto del re per il bot
+     */
     @Override
     public double getValore() {
         return 1000.0d;
     }
 
+    /**
+     * Sposta il re e segna che ha già mosso, impedendo futuri arrocchi.
+     * @param x riga di destinazione
+     * @param y colonna di destinazione
+     */
     @Override
     public void muovi(int x, int y) {
         super.muovi(x, y);
         haMosso = true;
     }
 
+    /**
+     * Calcola le caselle adiacenti raggiungibili dal re, senza includere l'arrocco.
+     * @return matrice con le caselle raggiungibili dal pezzo
+     */
     @Override
     public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];

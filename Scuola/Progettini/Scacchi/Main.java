@@ -7,8 +7,19 @@ import javax.swing.*;
 import Scuola.Progettini.Scacchi.Grafica.*;
 import Scuola.Progettini.Scacchi.Util.Bot;
 
+/**
+ * Punto di avvio del programma. Mostra i menu iniziali e apre la modalità scelta dall'utente.
+ */
 public class Main {
-
+    /**
+     * Mostra un dialog grafico riutilizzabile per menu e scelte dell'utente.
+     * @param titolo titolo del dialog
+     * @param messaggio messaggio o componente da mostrare
+     * @param percorsoImmagine percorso dell'icona
+     * @param opzioni opzioni disponibili
+     * @param valoreIniziale opzione selezionata inizialmente
+     * @return indice della scelta effettuata
+     */
     private static int mostraDialogPerScelta(String titolo, Object messaggio, String percorsoImmagine, String[] opzioni, String valoreIniziale) {
         int scelta = JOptionPane.showOptionDialog(
             null,
@@ -23,6 +34,10 @@ public class Main {
         return scelta;
     }
 
+    /**
+     * Chiede all'utente se vuole giocare in due oppure contro il bot.
+     * @return true se viene scelta la modalità contro bot
+     */
     private static boolean scegliConBot() {
         int sceltaBot = mostraDialogPerScelta(
             "Modalità partita",
@@ -39,6 +54,10 @@ public class Main {
         return sceltaBot == 1;
     }
 
+    /**
+     * Chiede all'utente la difficoltà del bot e la converte nella profondità di ricerca.
+     * @return profondità del bot
+     */
     private static int scegliDifficoltaBot() {
         int sceltaBot = mostraDialogPerScelta(
             "Difficoltà bot",
@@ -58,6 +77,11 @@ public class Main {
         return sceltaBot;
     }
 
+    /**
+     * Cerca i file .txt disponibili in una cartella e mostra un errore se non ne trova.
+     * @param percorsoCartella cartella in cui cercare
+     * @return lista dei file trovati
+     */
     private static ArrayList<File> trovaFile(String percorsoCartella) {
         ArrayList<File> files = new ArrayList<>();
         File cartella = new File(percorsoCartella);
@@ -96,6 +120,11 @@ public class Main {
         return files;
     }
 
+    /**
+     * Avvia il programma mostrando il menu principale e aprendo partita o esercizio in base alla scelta.
+     * @param args argomenti da riga di comando non usati
+     * @throws IOException se il caricamento dei file fallisce
+     */
     public static void main(String[] args) throws IOException {
         int sceltaIniziale = mostraDialogPerScelta(
                                 "Menù", 

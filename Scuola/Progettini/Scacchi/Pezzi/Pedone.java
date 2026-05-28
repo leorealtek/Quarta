@@ -2,6 +2,9 @@ package Scuola.Progettini.Scacchi.Pezzi;
 
 import Scuola.Progettini.Scacchi.Util.*;
 
+/**
+ * Rappresenta il pedone, includendo prima mossa, avanzamento doppio e stato utile per l'en passant.
+ */
 public class Pedone extends Pezzo {
 
     private boolean primaMossa;
@@ -13,11 +16,20 @@ public class Pedone extends Pezzo {
         this.secondaMossa = (isBianco && riga == 5 || riga == 4) || (!isBianco && riga == 2 || riga == 3);
     }
 
+    /**
+     * Restituisce il valore del pezzo usato nella valutazione del bot.
+     * @return valore del pedone per il bot
+     */
     @Override
     public double getValore() {
         return 1.0d;
     }
 
+    /**
+     * Sposta il pedone aggiornando gli stati primaMossa e secondaMossa usati per doppio passo ed en passant.
+     * @param x riga di destinazione
+     * @param y colonna di destinazione
+     */
     @Override
     public void muovi(int x, int y) {
         int rigaPrecedente = riga;
@@ -27,6 +39,10 @@ public class Pedone extends Pezzo {
         primaMossa = false;
     }
 
+    /**
+     * Calcola le mosse teoriche del pedone: avanzamento, doppio passo iniziale e catture diagonali.
+     * @return matrice con le caselle raggiungibili dal pezzo
+     */
     @Override
     public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];

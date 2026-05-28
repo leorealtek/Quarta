@@ -2,17 +2,28 @@ package Scuola.Progettini.Scacchi.Pezzi;
 
 import Scuola.Progettini.Scacchi.Util.*;
 
+/**
+ * Rappresenta il cavallo e calcola le sue mosse a L.
+ */
 public class Cavallo extends Pezzo {
 
     public Cavallo(char nome, int riga, int colonna, Casella[][] mappa) {
         super(nome, riga, colonna, mappa);
     }
 
+    /**
+     * Restituisce il valore del pezzo usato nella valutazione del bot.
+     * @return valore del cavallo per il bot
+     */
     @Override
     public double getValore() {
         return 3.0d;
     }
 
+    /**
+     * Calcola tutte le mosse a L possibili del cavallo.
+     * @return matrice con le caselle raggiungibili dal pezzo
+     */
     @Override
     public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];

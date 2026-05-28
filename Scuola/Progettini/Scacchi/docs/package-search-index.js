@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"Scuola.Progettini.Scacchi"},{"l":"Scuola.Progettini.Scacchi.Exception"},{"l":"Scuola.Progettini.Scacchi.Grafica"},{"l":"Scuola.Progettini.Scacchi.Partite"},{"l":"Scuola.Progettini.Scacchi.Pezzi"},{"l":"Scuola.Progettini.Scacchi.Util"}];updateSearchResults();

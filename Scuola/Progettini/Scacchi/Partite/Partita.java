@@ -7,6 +7,9 @@ import Scuola.Progettini.Scacchi.Util.*;
 import java.io.*;
 import java.util.Scanner;
 
+/**
+ * Rappresenta una partita normale di scacchi, con salvataggio su file, cronologia delle mosse, patta per mosse e patta per ripetizione.
+ */
 public class Partita extends PartitaAstratta {
 
     private int ultimaMossaPerPatta;
@@ -21,12 +24,20 @@ public class Partita extends PartitaAstratta {
     private static final String CARTELLA_PARTITE = "Scuola/Progettini/Scacchi/FilePartite";
     private static final String CARTELLA_TEMPORANEI = "Scuola/Progettini/Scacchi/FilePartite/FileTemporanei";
 
+    /**
+     * Crea una nuova partita standard e salva subito la posizione iniziale nella cronologia temporanea.
+     */
     public Partita() {
         super();
         inizializzaPartitaStandard();
         salvaPerOgniRound();
     }
 
+    /**
+     * Carica una partita salvata da file e prepara la cronologia temporanea.
+     * @param percorsoFile percorso del file di salvataggio
+     * @throws IOException se il file non può essere letto
+     */
     public Partita(String percorsoFile) throws IOException {
         caricaMappaDaFile(percorsoFile);
         collegaTemporaneiAlFileReale(percorsoFile);
@@ -36,6 +47,9 @@ public class Partita extends PartitaAstratta {
         primaMossaTemporaneaNonSalvata = numeroFileMossa;
     }
 
+    /**
+     * Prepara la posizione iniziale classica degli scacchi con tutti i pezzi nelle caselle corrette.
+     */
     private void inizializzaPartitaStandard() {
         mappa[0][0] = new Casella(new Torre('t', 0, 0, mappa));
         mappa[0][1] = new Casella(new Cavallo('c', 0, 1, mappa));
@@ -64,6 +78,10 @@ public class Partita extends PartitaAstratta {
         mosse = 0;
     }
 
+    /**
+     * Esegue la mossa del bot aggiornando anche patta, turno, cronologia ed en passant.
+     * @param turnoBianco true se deve muovere il bot bianco, false per il bot nero
+     */
     @Override
     public void muoviPezzoConBot(boolean turnoBianco) {
         if (turnoBianco != attaccaBianco) {
@@ -88,6 +106,13 @@ public class Partita extends PartitaAstratta {
         dopoMossa(turnoBianco);
     }
 
+    /**
+     * Capisce se la mossa del bot è stata una mossa di pedone o una cattura, utile per la regola delle cinquanta mosse.
+     * @param prima scacchiera prima della mossa
+     * @param dopo scacchiera dopo la mossa
+     * @param coloreBot colore che ha mosso
+     * @return true se la mossa azzera il conteggio della patta per mosse
+     */
     private boolean botHaMossoPedoneOCatturato(Casella[][] prima, Casella[][] dopo, boolean coloreBot) {
         int pezziPrima = 0;
         int pezziDopo = 0;
@@ -120,6 +145,11 @@ public class Partita extends PartitaAstratta {
         return pedoneMosso || cattura;
     }
 
+    /**
+     * Ricostruisce il riferimento al pedone vulnerabile all'en passant partendo dalle coordinate salvate nel file.
+     * @param riga riga del pedone
+     * @param colonna colonna del pedone
+     */
     private void impostaPedoneEnPassant(int riga, int colonna) {
         if (riga == -1 && colonna == -1) {
             pedoneEnPassant = null;
@@ -163,6 +193,9 @@ public class Partita extends PartitaAstratta {
         return true;
     }
 
+    /**
+     * Ripristina dai dati del salvataggio lo stato di movimento di re e torri, necessario per l'arrocco.
+     */
     private void impostaStatoArrocco(
             boolean reBiancoHaMosso,
             boolean torreBiancaLungaHaMosso,
@@ -200,6 +233,10 @@ public class Partita extends PartitaAstratta {
         }
     }
 
+    /**
+     * Controlla che nella mappa caricata siano presenti sia il re bianco sia il re nero.
+     * @throws FileNonValidoException se uno dei due re manca
+     */
     private void validaRePresenti() {
         if (trovaRe(true) == null) {
             throw new FileNonValidoException("Nel file manca il Re bianco.");
@@ -210,6 +247,12 @@ public class Partita extends PartitaAstratta {
         }
     }
 
+    /**
+     * Carica da file una partita completa, inclusi turno, mosse, en passant, arrocco e bot.
+     * @param percorsoFile percorso del file da caricare
+     * @throws IOException se il file non può essere letto
+     * @throws FileNonValidoException se il file non rispetta il formato previsto
+     */
     public void caricaMappaDaFile(String percorsoFile) throws IOException {
         try (Scanner s = new Scanner(new File(percorsoFile))) {
             Casella[][] nuovaMappa = leggiScacchiera(s);
@@ -323,6 +366,11 @@ public class Partita extends PartitaAstratta {
         }
     }
 
+    /**
+     * Salva su file lo stato completo della partita, compresi turno, mosse, en passant, arrocco e bot.
+     * @param percorsoFile percorso del file di destinazione
+     * @throws IOException se il file non può essere scritto
+     */
     public void salvaSuFile(String percorsoFile) throws IOException {
         try (PrintWriter writer = new PrintWriter(new FileWriter(percorsoFile))) {
             for (int i = 0; i < mappa.length; i++) {
@@ -367,6 +415,14 @@ public class Partita extends PartitaAstratta {
         }
     }
 
+    /**
+     * Esegue una mossa del giocatore aggiornando regole speciali, patta, turno e cronologia temporanea.
+     * @param rigaPartenza riga di partenza
+     * @param colonnaPartenza colonna di partenza
+     * @param rigaArrivo riga di arrivo
+     * @param colonnaArrivo colonna di arrivo
+     * @throws MossaNonValidaException se la mossa non è legale
+     */
     @Override
     public void muoviPezzo(int rigaPartenza, int colonnaPartenza, int rigaArrivo, int colonnaArrivo) {
         validaCoordinate(rigaPartenza, colonnaPartenza);
@@ -411,6 +467,10 @@ public class Partita extends PartitaAstratta {
         dopoMossa(coloreCheHaMosso);
     }
 
+    /**
+     * Controlla la patta legata al numero di mosse senza mosse di pedone o catture.
+     * @return true se la partita è patta per mosse
+     */
     public boolean pattaPerMosse() {
         if (mosse - ultimaMossaPerPatta > 50) {
             return true;
@@ -418,7 +478,10 @@ public class Partita extends PartitaAstratta {
         return false;
     }
 
-
+    /**
+     * Controlla se la posizione attuale si è già ripetuta almeno tre volte nella cronologia.
+     * @return true se la partita è patta per tripla ripetizione
+     */
     public boolean pattaPerRipetizione() {
         if (percorsoDirectoryPartita == null) {
             return false;
@@ -452,6 +515,11 @@ public class Partita extends PartitaAstratta {
         return ripetizioni >= 3;
     }
 
+    /**
+     * Salva una posizione ridotta usata per cronologia e controllo della ripetizione.
+     * @param percorsoFile file temporaneo da scrivere
+     * @throws IOException se il file non può essere scritto
+     */
     private void salvaSuFileTemporaneo(String percorsoFile) throws IOException {
         try (PrintWriter writer = new PrintWriter(new FileWriter(percorsoFile))) {
             for (int i = 0; i < mappa.length; i++) {
@@ -477,6 +545,10 @@ public class Partita extends PartitaAstratta {
         }
     }
 
+    /**
+     * Crea una chiave testuale della posizione corrente considerando pezzi, turno, en passant e arrocco.
+     * @return chiave univoca della posizione attuale
+     */
     private String creaChiavePosizioneAttuale() {
         String chiave = "";
 
@@ -508,6 +580,12 @@ public class Partita extends PartitaAstratta {
         return chiave;
     }
 
+    /**
+     * Legge da un file temporaneo la chiave della posizione salvata.
+     * @param file file temporaneo da leggere
+     * @return chiave della posizione letta
+     * @throws IOException se il file non può essere letto
+     */
     private String leggiChiavePosizioneDaFile(File file) throws IOException {
         try (Scanner scanner = new Scanner(file)) {
             String chiave = "";
@@ -542,6 +620,10 @@ public class Partita extends PartitaAstratta {
         }
     }
 
+    /**
+     * Restituisce la parte di chiave relativa all'en passant, considerando solo i casi realmente catturabili.
+     * @return stringa usata nella chiave di ripetizione
+     */
     private String getEnPassantPerRipetizione() {
         if (pedoneEnPassant == null || !esisteCatturaEnPassantPossibile()) {
             return "-1 -1";
@@ -550,6 +632,10 @@ public class Partita extends PartitaAstratta {
         return pedoneEnPassant.getRiga() + " " + pedoneEnPassant.getColonna();
     }
 
+    /**
+     * Controlla se il pedone vulnerabile all'en passant può essere davvero catturato dal colore di turno.
+     * @return true se esiste una cattura en passant possibile
+     */
     private boolean esisteCatturaEnPassantPossibile() {
         int rigaPedone = pedoneEnPassant.getRiga();
         int colonnaPedone = pedoneEnPassant.getColonna();
@@ -582,6 +668,10 @@ public class Partita extends PartitaAstratta {
         return false;
     }
 
+    /**
+     * Restituisce la parte di chiave relativa ai diritti di arrocco dei due colori.
+     * @return stringa usata nella chiave di ripetizione
+     */
     private String getArroccoPerRipetizione() {
         return reHaMosso(true) + " "
                 + torreHaMosso(true, true) + " "
@@ -591,6 +681,9 @@ public class Partita extends PartitaAstratta {
                 + torreHaMosso(false, false);
     }
 
+    /**
+     * Salva la posizione corrente nella cartella temporanea della partita e aggiorna l'indice della cronologia.
+     */
     private void salvaPerOgniRound() {
         File cartellaPrincipale = new File(CARTELLA_TEMPORANEI);
 
@@ -616,6 +709,11 @@ public class Partita extends PartitaAstratta {
         }
     }
 
+    /**
+     * Collega una partita salvata realmente alla cartella temporanea usata per la sua cronologia.
+     * @param percorsoFile file reale della partita salvata
+     * @throws IOException se non è possibile preparare i temporanei
+     */
     private void collegaTemporaneiAlFileReale(String percorsoFile) throws IOException {
         File fileReale = new File(percorsoFile);
         numeroPartita = leggiNumeroPartitaDaNome(fileReale.getName());
@@ -638,8 +736,11 @@ public class Partita extends PartitaAstratta {
         numeroFileMossa = trovaProssimoNumeroMossa(cartellaPartita);
     }
 
-
-private int trovaProssimoNumeroPartita() {
+    /**
+     * Calcola il prossimo numero disponibile per creare una nuova cartella di temporanei.
+     * @return numero della prossima partita temporanea
+     */
+    private int trovaProssimoNumeroPartita() {
         int numero = 1;
 
         while (true) {
@@ -654,6 +755,11 @@ private int trovaProssimoNumeroPartita() {
         }
     }
 
+    /**
+     * Trova il prossimo numero di mossa disponibile in una cartella di cronologia.
+     * @param cartellaPartita cartella contenente i file MossaX.txt
+     * @return prossimo indice disponibile
+     */
     private int trovaProssimoNumeroMossa(File cartellaPartita) {
         int prossimo = 0;
         File[] fileMosse = cartellaPartita.listFiles();
@@ -684,6 +790,11 @@ private int trovaProssimoNumeroPartita() {
         return prossimo;
     }
 
+    /**
+     * Estrae il numero della partita dal nome di un file di salvataggio.
+     * @param nomeFile nome del file da analizzare
+     * @return numero trovato, oppure -1 se non presente
+     */
     private int leggiNumeroPartitaDaNome(String nomeFile) {
         if (!nomeFile.startsWith("Partita") || !nomeFile.endsWith(".txt")) {
             return trovaProssimoNumeroPartita();
@@ -696,7 +807,11 @@ private int trovaProssimoNumeroPartita() {
         }
     }
 
-
+    /**
+     * Carica dalla cronologia temporanea una posizione precedente o successiva senza perdere il riferimento alla partita.
+     * @param indiceMossa indice della mossa da caricare
+     * @throws IOException se il file temporaneo non può essere letto
+     */
     public void caricaMossaTemporanea(int indiceMossa) throws IOException {
         if (percorsoDirectoryPartita == null) {
             return;
@@ -749,7 +864,13 @@ private int trovaProssimoNumeroPartita() {
         }
     }
 
-
+    /**
+     * Riconosce nella cronologia se il movimento mostrato è un arrocco e restituisce il movimento del re.
+     * @param prima posizione precedente
+     * @param dopo posizione successiva
+     * @param biancoCheHaMosso colore che ha mosso
+     * @return coordinate del movimento del re oppure null
+     */
     private int[] trovaMovimentoArroccoCronologia(char[][] prima, char[][] dopo, boolean biancoCheHaMosso) {
         int riga = biancoCheHaMosso ? 7 : 0;
         char re = biancoCheHaMosso ? 'R' : 'r';
@@ -770,6 +891,12 @@ private int trovaProssimoNumeroPartita() {
         return new int[] {-1, -1, -1, -1};
     }
 
+    /**
+     * Legge solo i caratteri dei pezzi da una mossa temporanea della cronologia.
+     * @param indiceMossa indice della mossa da leggere
+     * @return matrice 8x8 con i caratteri dei pezzi
+     * @throws IOException se il file non può essere letto
+     */
     private char[][] leggiPezziMossaTemporanea(int indiceMossa) throws IOException {
         File fileMossa = new File(percorsoDirectoryPartita, "Mossa" + indiceMossa + ".txt");
         if (!fileMossa.exists()) {
@@ -798,6 +925,12 @@ private int trovaProssimoNumeroPartita() {
         return pezzi;
     }
 
+    /**
+     * Legge il turno salvato in una mossa temporanea della cronologia.
+     * @param indiceMossa indice della mossa da leggere
+     * @return true se il turno salvato è del bianco
+     * @throws IOException se il file non può essere letto
+     */
     private boolean leggiTurnoMossaTemporanea(int indiceMossa) throws IOException {
         File fileMossa = new File(percorsoDirectoryPartita, "Mossa" + indiceMossa + ".txt");
         if (!fileMossa.exists()) {
@@ -824,6 +957,11 @@ private int trovaProssimoNumeroPartita() {
         return bianco ? Character.isUpperCase(pezzo) : Character.isLowerCase(pezzo);
     }
 
+    /**
+     * Crea o aggiorna il file reale della partita e lo collega ai temporanei della cronologia.
+     * @return file reale in cui è stata salvata la partita
+     * @throws IOException se il salvataggio fallisce
+     */
     public File salvaPartitaReale() throws IOException {
         File cartella = new File(CARTELLA_PARTITE);
         if (!cartella.exists()) {
@@ -845,6 +983,9 @@ private int trovaProssimoNumeroPartita() {
         return fileDaSalvare;
     }
 
+    /**
+     * Elimina la cartella temporanea della partita se l'utente chiude senza salvare.
+     */
     public void eliminaTemporaneiSeNonSalvata() {
         if (partitaSalvata) {
             return;
@@ -864,6 +1005,11 @@ private int trovaProssimoNumeroPartita() {
         eliminaMosseTemporaneeDa(cartellaPartita, primaMossaTemporaneaNonSalvata);
     }
 
+    /**
+     * Rimuove dalla cronologia tutte le mosse successive a quella indicata, quando si torna indietro e si gioca una nuova linea.
+     * @param cartellaPartita cartella della cronologia
+     * @param numeroIniziale prima mossa da eliminare
+     */
     private void eliminaMosseTemporaneeDa(File cartellaPartita, int numeroIniziale) {
         File[] fileMosse = cartellaPartita.listFiles();
         if (fileMosse == null) {
@@ -892,6 +1038,10 @@ private int trovaProssimoNumeroPartita() {
         numeroFileMossa = trovaProssimoNumeroMossa(cartellaPartita);
     }
 
+    /**
+     * Elimina ricorsivamente una cartella o un file temporaneo.
+     * @param file file o cartella da eliminare
+     */
     private void eliminaCartella(File file) {
         if (file == null || !file.exists()) {
             return;
@@ -909,6 +1059,10 @@ private int trovaProssimoNumeroPartita() {
         file.delete();
     }
 
+    /**
+     * Aggiorna numero di mosse e salvataggio temporaneo dopo ogni mossa valida.
+     * @param coloreCheHaMosso colore che ha appena mosso
+     */
     @Override
     protected void dopoMossa(boolean coloreCheHaMosso) {
         mosse++;
@@ -938,10 +1092,20 @@ private int trovaProssimoNumeroPartita() {
         return trovaProssimoNumeroMossa(cartellaPartita) - 1;
     }
 
+    /**
+     * Indica se la scacchiera mostrata corrisponde all'ultima posizione della cronologia.
+     * @return true se si è sull'ultima mossa
+     */
     public boolean isUltimaMossaCronologia() {
         return getIndiceCronologiaAttuale() == getUltimoIndiceCronologia();
     }
-    
+
+    /**
+     * Ricostruisce il movimento eseguito tra due posizioni consecutive della cronologia.
+     * @param indiceMossa indice della posizione di arrivo
+     * @return array con riga/colonna di partenza e arrivo, oppure null se non individuato
+     * @throws IOException se la cronologia non può essere letta
+     */
     public int[] getMovimentoMossaCronologia(int indiceMossa) throws IOException {
         if (indiceMossa <= 0 || percorsoDirectoryPartita == null) {
             return new int[] {-1, -1, -1, -1};

@@ -2,17 +2,28 @@ package Scuola.Progettini.Scacchi.Pezzi;
 
 import Scuola.Progettini.Scacchi.Util.*;
 
+/**
+ * Rappresenta l'alfiere e calcola le sue mosse in diagonale.
+ */
 public class Alfiere extends Pezzo {
 
     public Alfiere(char nome, int riga, int colonna, Casella[][] mappa) {
         super(nome, riga, colonna, mappa);
     }
 
+    /**
+     * Restituisce il valore del pezzo usato nella valutazione del bot.
+     * @return valore dell'alfiere per il bot
+     */
     @Override
     public double getValore() {
         return 3.0d;
     }
-    
+
+    /**
+     * Calcola tutte le mosse diagonali possibili dell'alfiere fino a ostacolo o cattura.
+     * @return matrice con le caselle raggiungibili dal pezzo
+     */
     @Override
     public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];
