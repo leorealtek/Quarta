@@ -104,7 +104,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         add(scacchiera, BorderLayout.CENTER);
     }
 
-    private void aggiornaGrafica() {
+    protected void aggiornaGrafica() {
         Casella[][] mappa = partita.getMappa();
 
         for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
@@ -152,7 +152,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
                 && colonna >= 0 && colonna < DIMENSIONE_SCACCHIERA;
     }
 
-    private void salvaUltimoMovimento(int rigaPartenza, int colonnaPartenza, int rigaArrivo, int colonnaArrivo) {
+    protected void salvaUltimoMovimento(int rigaPartenza, int colonnaPartenza, int rigaArrivo, int colonnaArrivo) {
         rigaMovimentoPartenza = rigaPartenza;
         colonnaMovimentoPartenza = colonnaPartenza;
         rigaMovimentoArrivo = rigaArrivo;
@@ -454,7 +454,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         aggiornaGrafica();
     }
 
-    private void mostraErrore(String messaggio) {
+    protected void mostraErrore(String messaggio) {
         if (finito) return;
 
         if (timerErrore != null && timerErrore.isRunning()) {
@@ -482,9 +482,18 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         timerErrore.start();
     }
 
+    protected boolean inputAbilitato() {
+        return true;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         if (finito) return;
+
+        if (!inputAbilitato()) {
+            mostraErrore("Torna all'ultima mossa per continuare a giocare");
+            return;
+        }
 
         JLabel label = (JLabel) e.getSource();
         int riga = (int) label.getClientProperty("riga");
@@ -514,7 +523,28 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
             for (int colonna = 0; colonna < DIMENSIONE_SCACCHIERA; colonna++) {
                 labels[riga][colonna].removeMouseListener(this);
-                labels[riga][colonna].setEnabled(false);
+                labels[riga][colonna].setEnabled(true);
+            }
+        }
+    }
+
+    protected void riattivaScacchiera() {
+        for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
+            for (int colonna = 0; colonna < DIMENSIONE_SCACCHIERA; colonna++) {
+                labels[riga][colonna].setEnabled(true);
+
+                boolean listenerPresente = false;
+                MouseListener[] listeners = labels[riga][colonna].getMouseListeners();
+                for (MouseListener listener : listeners) {
+                    if (listener == this) {
+                        listenerPresente = true;
+                        break;
+                    }
+                }
+
+                if (!listenerPresente) {
+                    labels[riga][colonna].addMouseListener(this);
+                }
             }
         }
     }

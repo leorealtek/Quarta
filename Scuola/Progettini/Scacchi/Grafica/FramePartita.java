@@ -1,5 +1,6 @@
 package Scuola.Progettini.Scacchi.Grafica;
 
+import Scuola.Progettini.Scacchi.Main;
 import Scuola.Progettini.Scacchi.Partite.Partita;
 
 import java.awt.*;
@@ -9,8 +10,17 @@ import javax.swing.*;
 
 public class FramePartita extends FrameScacchiAstratto {
 
+    private static final Color COLORE_BARRA = new Color(248, 241, 230);
+    private static final Color COLORE_BOTTONE = new Color(236, 219, 195);
+    private static final Color COLORE_BOTTONE_HOVER = new Color(225, 202, 172);
+    private static final Color COLORE_TESTO = new Color(48, 36, 25);
+    private static final Color COLORE_BORDO = new Color(174, 139, 104);
+
     private final Partita partitaNormale;
+    private JButton home;
     private JButton salvaPartita;
+    private JButton indietro;
+    private JButton avanti;
 
     public FramePartita(boolean conBot) {
         this(new Partita(), conBot);
@@ -31,76 +41,291 @@ public class FramePartita extends FrameScacchiAstratto {
     private FramePartita(Partita partita, boolean conBot) {
         super("Scacchi", partita, conBot);
         this.partitaNormale = partita;
-        this.salvaPartita = new JButton("Salva partita");
-        aggiungiPulsanteSalvaPartita();
+        aggiungiPulsantiAlti();
         aggiungiControlloChiusura();
     }
 
-    private void aggiungiPulsanteSalvaPartita() {
-        salvaPartita = new JButton("Salva partita");
-        salvaPartita.setFocusable(false);
+    private void aggiungiPulsantiAlti() {
+        home = creaBottone("⌂ Home", 104, 30);
+        salvaPartita = creaBottone("💾 Salva", 112, 30);
+        indietro = creaBottoneFreccia("←");
+        avanti = creaBottoneFreccia("→");
+
+        home.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tornaHome();
+            }
+        });
 
         salvaPartita.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                salvaPartita();
+            }
+        });
+
+        indietro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cambiaMossaCronologia(-1);
+            }
+        });
+
+        avanti.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cambiaMossaCronologia(1);
+            }
+        });
+
+        stato.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        stato.setForeground(COLORE_TESTO);
+        stato.setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
+
+        info.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        info.setForeground(new Color(90, 75, 60));
+        info.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+
+        JPanel pannelloAlto = new JPanel(new BorderLayout());
+        pannelloAlto.setBackground(COLORE_BARRA);
+        pannelloAlto.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 2, 0, COLORE_BORDO),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+
+        JPanel pannelloTesti = new JPanel();
+        pannelloTesti.setOpaque(false);
+        pannelloTesti.setLayout(new BoxLayout(pannelloTesti, BoxLayout.Y_AXIS));
+        stato.setAlignmentX(Component.CENTER_ALIGNMENT);
+        info.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pannelloTesti.add(Box.createVerticalGlue());
+        pannelloTesti.add(stato);
+        pannelloTesti.add(info);
+        pannelloTesti.add(Box.createVerticalGlue());
+
+        JPanel rigaFrecce = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 0));
+        rigaFrecce.setOpaque(false);
+        rigaFrecce.add(indietro);
+        rigaFrecce.add(avanti);
+
+        JPanel rigaAzioni = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 0));
+        rigaAzioni.setOpaque(false);
+        rigaAzioni.add(home);
+        rigaAzioni.add(salvaPartita);
+
+        JPanel pannelloComandi = new JPanel();
+        pannelloComandi.setOpaque(false);
+        pannelloComandi.setLayout(new BoxLayout(pannelloComandi, BoxLayout.Y_AXIS));
+        rigaFrecce.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rigaAzioni.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pannelloComandi.add(rigaFrecce);
+        pannelloComandi.add(Box.createVerticalStrut(5));
+        pannelloComandi.add(rigaAzioni);
+
+        JPanel pannelloDestra = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        pannelloDestra.setOpaque(false);
+        pannelloDestra.add(pannelloComandi);
+
+        Dimension dimensioneComandi = pannelloDestra.getPreferredSize();
+        JPanel spaziatoreSinistra = new JPanel();
+        spaziatoreSinistra.setOpaque(false);
+        spaziatoreSinistra.setPreferredSize(dimensioneComandi);
+
+        pannelloAlto.add(spaziatoreSinistra, BorderLayout.WEST);
+        pannelloAlto.add(pannelloTesti, BorderLayout.CENTER);
+        pannelloAlto.add(pannelloDestra, BorderLayout.EAST);
+
+        getContentPane().remove(0);
+        add(pannelloAlto, BorderLayout.NORTH);
+
+        aggiornaPulsantiCronologia();
+        revalidate();
+        repaint();
+    }
+
+    private JButton creaBottone(String testo, int larghezza, int altezza) {
+        JButton bottone = new JButton(testo);
+        bottone.setFocusable(false);
+        bottone.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
+        bottone.setForeground(COLORE_TESTO);
+        bottone.setBackground(COLORE_BOTTONE);
+        bottone.setOpaque(true);
+        bottone.setContentAreaFilled(true);
+        bottone.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLORE_BORDO, 1),
+                BorderFactory.createEmptyBorder(6, 12, 6, 12)
+        ));
+        bottone.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        bottone.setPreferredSize(new Dimension(larghezza, altezza));
+
+        bottone.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (bottone.isEnabled()) {
+                    bottone.setBackground(COLORE_BOTTONE_HOVER);
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                bottone.setBackground(COLORE_BOTTONE);
+            }
+        });
+
+        return bottone;
+    }
+
+    private JButton creaBottoneFreccia(String testo) {
+        JButton bottone = creaBottone(testo, 52, 30);
+        bottone.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+        return bottone;
+    }
+
+    private void tornaHome() {
+        partitaNormale.eliminaTemporaneiSeNonSalvata();
+        dispose();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
                 try {
-                    File fileDaSalvare = partitaNormale.salvaPartitaReale();
-
-                    JOptionPane.showMessageDialog(
-                        FramePartita.this,
-                        "Partita salvata in:\n" + fileDaSalvare.getAbsolutePath(),
-                        "Salvataggio completato",
-                        JOptionPane.INFORMATION_MESSAGE
-                    );
-
-                    String[] scelte = {"Continua", "Esci"};
-
-                    int scelta = JOptionPane.showOptionDialog(
-                        null,
-                        "Vuoi continuare a giocare?",
-                        "Salvataggio partita",
-                        JOptionPane.DEFAULT_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        new ImageIcon("Scuola/Progettini/Scacchi/Immagini/Scelta.jpg"),
-                        scelte,
-                        scelte[0]
-                    );
-
-                    if (scelta <= 0) return;
-                    if (scelta == 1) {
-                        System.exit(0);
-                    }
-
+                    Main.main(new String[0]);
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(
-                        FramePartita.this,
-                        "Errore durante il salvataggio:\n" + ex.getMessage(),
+                        null,
+                        "Errore durante il ritorno alla home:\n" + ex.getMessage(),
                         "Errore",
                         JOptionPane.ERROR_MESSAGE
                     );
                 }
             }
         });
+    }
 
-        JPanel pannelloAlto = new JPanel(new BorderLayout());
-        pannelloAlto.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+    private void salvaPartita() {
+        if (!partitaNormale.isUltimaMossaCronologia()) {
+            JOptionPane.showMessageDialog(
+                FramePartita.this,
+                "Torna all'ultima mossa prima di salvare la partita.",
+                "Cronologia",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
 
-        JPanel pannelloTesti = new JPanel(new GridLayout(2, 1));
-        pannelloTesti.add(stato);
-        pannelloTesti.add(info);
+        try {
+            File fileDaSalvare = partitaNormale.salvaPartitaReale();
 
-        JPanel spazioSinistra = new JPanel();
-        spazioSinistra.setPreferredSize(salvaPartita.getPreferredSize());
+            JOptionPane.showMessageDialog(
+                FramePartita.this,
+                "Partita salvata in:\n" + fileDaSalvare.getAbsolutePath(),
+                "Salvataggio completato",
+                JOptionPane.INFORMATION_MESSAGE
+            );
 
-        pannelloAlto.add(spazioSinistra, BorderLayout.WEST);
-        pannelloAlto.add(pannelloTesti, BorderLayout.CENTER);
-        pannelloAlto.add(salvaPartita, BorderLayout.EAST);
+            String[] scelte = {"Continua", "Esci"};
 
-        getContentPane().remove(0);
-        add(pannelloAlto, BorderLayout.NORTH);
+            int scelta = JOptionPane.showOptionDialog(
+                null,
+                "Vuoi continuare a giocare?",
+                "Salvataggio partita",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                new ImageIcon("Scuola/Progettini/Scacchi/Immagini/Scelta.jpg"),
+                scelte,
+                scelte[0]
+            );
 
-        revalidate();
-        repaint();
+            if (scelta <= 0) return;
+            if (scelta == 1) {
+                System.exit(0);
+            }
+
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(
+                FramePartita.this,
+                "Errore durante il salvataggio:\n" + ex.getMessage(),
+                "Errore",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private void cambiaMossaCronologia(int direzione) {
+        int nuovaMossa = partitaNormale.getIndiceCronologiaAttuale() + direzione;
+        int ultimaMossa = partitaNormale.getUltimoIndiceCronologia();
+
+        if (nuovaMossa < 0 || nuovaMossa > ultimaMossa) {
+            return;
+        }
+
+        try {
+            partitaNormale.caricaMossaTemporanea(nuovaMossa);
+            rigaSelezionata = -1;
+            colonnaSelezionata = -1;
+            impostaMovimentoDaCronologia(nuovaMossa);
+
+            finito = false;
+            erroreVisibile = false;
+            riattivaScacchiera();
+
+            aggiornaGrafica();
+            aggiornaPulsantiCronologia();
+
+            if (nuovaMossa == ultimaMossa) {
+                controllaFine(!partitaNormale.isAttaccaBianco());
+            } else {
+                aggiornaMessaggioCronologia();
+            }
+        } catch (IOException | RuntimeException ex) {
+            mostraErrore(ex.getMessage());
+        }
+    }
+
+
+    private void impostaMovimentoDaCronologia(int indiceMossa) {
+        try {
+            int[] movimento = partitaNormale.getMovimentoMossaCronologia(indiceMossa);
+
+            if (movimento == null || movimento.length != 4 || movimento[0] == -1) {
+                rigaMovimentoPartenza = -1;
+                colonnaMovimentoPartenza = -1;
+                rigaMovimentoArrivo = -1;
+                colonnaMovimentoArrivo = -1;
+                mostraUltimoMovimento = false;
+                return;
+            }
+
+            salvaUltimoMovimento(movimento[0], movimento[1], movimento[2], movimento[3]);
+        } catch (IOException | RuntimeException ex) {
+            rigaMovimentoPartenza = -1;
+            colonnaMovimentoPartenza = -1;
+            rigaMovimentoArrivo = -1;
+            colonnaMovimentoArrivo = -1;
+            mostraUltimoMovimento = false;
+        }
+    }
+
+    private void aggiornaPulsantiCronologia() {
+        if (indietro == null || avanti == null || salvaPartita == null) return;
+
+        int corrente = partitaNormale.getIndiceCronologiaAttuale();
+        int ultimo = partitaNormale.getUltimoIndiceCronologia();
+
+        indietro.setEnabled(corrente > 0);
+        avanti.setEnabled(corrente < ultimo);
+        salvaPartita.setEnabled(corrente == ultimo);
+    }
+
+    private void aggiornaMessaggioCronologia() {
+        if (partitaNormale.isUltimaMossaCronologia()) {
+            return;
+        }
+
+        stato.setForeground(Color.BLACK);
+        stato.setText("Cronologia: mossa " + partitaNormale.getMosse()
+                + " di " + (partitaNormale.getUltimoIndiceCronologia() + 1));
     }
 
     private void aggiungiControlloChiusura() {
@@ -116,7 +341,14 @@ public class FramePartita extends FrameScacchiAstratto {
     }
 
     @Override
+    protected boolean inputAbilitato() {
+        return partitaNormale.isUltimaMossaCronologia();
+    }
+
+    @Override
     protected void controllaFine(boolean coloreCheHaMosso) {
+        aggiornaPulsantiCronologia();
+
         String risultato = partitaNormale.checkWin();
 
         if (partitaNormale.pattaPerMosse()) {

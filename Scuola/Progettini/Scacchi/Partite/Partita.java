@@ -696,6 +696,134 @@ private int trovaProssimoNumeroPartita() {
         }
     }
 
+
+    public void caricaMossaTemporanea(int indiceMossa) throws IOException {
+        if (percorsoDirectoryPartita == null) {
+            return;
+        }
+
+        File fileMossa = new File(percorsoDirectoryPartita, "Mossa" + indiceMossa + ".txt");
+        if (!fileMossa.exists()) {
+            throw new FileNonValidoException("Mossa non trovata nella cronologia.");
+        }
+
+        try (Scanner scanner = new Scanner(fileMossa)) {
+            Casella[][] nuovaMappa = leggiScacchiera(scanner);
+
+            if (!scanner.hasNextLine()) {
+                throw new FileNonValidoException("Turno mancante nella mossa della cronologia.");
+            }
+
+            mappa = nuovaMappa;
+            attaccaBianco = leggiTurno(scanner.nextLine());
+            mosse = indiceMossa;
+            numeroFileMossa = indiceMossa + 1;
+            pedoneEnPassant = null;
+
+            if (scanner.hasNextLine()) {
+                String[] enPassant = scanner.nextLine().trim().split("\\s+");
+                if (enPassant.length == 2) {
+                    try {
+                        impostaPedoneEnPassant(Integer.parseInt(enPassant[0]), Integer.parseInt(enPassant[1]));
+                    } catch (NumberFormatException e) {
+                        throw new FileNonValidoException("EN_PASSANT non valido nella cronologia.");
+                    }
+                }
+            }
+
+            if (scanner.hasNextLine()) {
+                String[] arrocco = scanner.nextLine().trim().split("\\s+");
+                if (arrocco.length == 6) {
+                    impostaStatoArrocco(
+                        Boolean.parseBoolean(arrocco[0]),
+                        Boolean.parseBoolean(arrocco[1]),
+                        Boolean.parseBoolean(arrocco[2]),
+                        Boolean.parseBoolean(arrocco[3]),
+                        Boolean.parseBoolean(arrocco[4]),
+                        Boolean.parseBoolean(arrocco[5])
+                    );
+                }
+            }
+
+            validaRePresenti();
+        }
+    }
+
+
+    private int[] trovaMovimentoArroccoCronologia(char[][] prima, char[][] dopo, boolean biancoCheHaMosso) {
+        int riga = biancoCheHaMosso ? 7 : 0;
+        char re = biancoCheHaMosso ? 'R' : 'r';
+        char torre = biancoCheHaMosso ? 'T' : 't';
+
+        if (prima[riga][4] != re) {
+            return new int[] {-1, -1, -1, -1};
+        }
+
+        if (prima[riga][7] == torre && dopo[riga][6] == re && dopo[riga][5] == torre) {
+            return new int[] {riga, 4, riga, 6};
+        }
+
+        if (prima[riga][0] == torre && dopo[riga][2] == re && dopo[riga][3] == torre) {
+            return new int[] {riga, 4, riga, 2};
+        }
+
+        return new int[] {-1, -1, -1, -1};
+    }
+
+    private char[][] leggiPezziMossaTemporanea(int indiceMossa) throws IOException {
+        File fileMossa = new File(percorsoDirectoryPartita, "Mossa" + indiceMossa + ".txt");
+        if (!fileMossa.exists()) {
+            throw new FileNonValidoException("Mossa non trovata nella cronologia.");
+        }
+
+        char[][] pezzi = new char[8][8];
+
+        try (Scanner scanner = new Scanner(fileMossa)) {
+            for (int riga = 0; riga < 8; riga++) {
+                if (!scanner.hasNextLine()) {
+                    throw new FileNonValidoException("Scacchiera non valida nella cronologia.");
+                }
+
+                String linea = scanner.nextLine().replace(" ", "").trim();
+                if (linea.length() != 8) {
+                    throw new FileNonValidoException("Riga scacchiera non valida nella cronologia.");
+                }
+
+                for (int colonna = 0; colonna < 8; colonna++) {
+                    pezzi[riga][colonna] = linea.charAt(colonna);
+                }
+            }
+        }
+
+        return pezzi;
+    }
+
+    private boolean leggiTurnoMossaTemporanea(int indiceMossa) throws IOException {
+        File fileMossa = new File(percorsoDirectoryPartita, "Mossa" + indiceMossa + ".txt");
+        if (!fileMossa.exists()) {
+            throw new FileNonValidoException("Mossa non trovata nella cronologia.");
+        }
+
+        try (Scanner scanner = new Scanner(fileMossa)) {
+            for (int i = 0; i < 8; i++) {
+                if (!scanner.hasNextLine()) {
+                    throw new FileNonValidoException("Scacchiera non valida nella cronologia.");
+                }
+                scanner.nextLine();
+            }
+
+            if (!scanner.hasNextLine()) {
+                throw new FileNonValidoException("Turno mancante nella cronologia.");
+            }
+
+            return leggiTurno(scanner.nextLine());
+        }
+    }
+
+    private boolean isPezzoDelColore(char pezzo, boolean bianco) {
+        return bianco ? Character.isUpperCase(pezzo) : Character.isLowerCase(pezzo);
+    }
+
     public File salvaPartitaReale() throws IOException {
         File cartella = new File(CARTELLA_PARTITE);
         if (!cartella.exists()) {
@@ -795,6 +923,71 @@ private int trovaProssimoNumeroPartita() {
  
     public boolean isConBot() {
         return bot != null;
+    }
+
+    public int getIndiceCronologiaAttuale() {
+        return numeroFileMossa - 1;
+    }
+
+    public int getUltimoIndiceCronologia() {
+        if (percorsoDirectoryPartita == null) {
+            return 0;
+        }
+
+        File cartellaPartita = new File(percorsoDirectoryPartita);
+        return trovaProssimoNumeroMossa(cartellaPartita) - 1;
+    }
+
+    public boolean isUltimaMossaCronologia() {
+        return getIndiceCronologiaAttuale() == getUltimoIndiceCronologia();
+    }
+    
+    public int[] getMovimentoMossaCronologia(int indiceMossa) throws IOException {
+        if (indiceMossa <= 0 || percorsoDirectoryPartita == null) {
+            return new int[] {-1, -1, -1, -1};
+        }
+
+        char[][] prima = leggiPezziMossaTemporanea(indiceMossa - 1);
+        char[][] dopo = leggiPezziMossaTemporanea(indiceMossa);
+        boolean turnoDopo = leggiTurnoMossaTemporanea(indiceMossa);
+        boolean biancoCheHaMosso = !turnoDopo;
+
+        int[] arrocco = trovaMovimentoArroccoCronologia(prima, dopo, biancoCheHaMosso);
+        if (arrocco[0] != -1) {
+            return arrocco;
+        }
+
+        int rigaPartenza = -1;
+        int colonnaPartenza = -1;
+        int rigaArrivo = -1;
+        int colonnaArrivo = -1;
+
+        for (int riga = 0; riga < 8; riga++) {
+            for (int colonna = 0; colonna < 8; colonna++) {
+                char pezzoPrima = prima[riga][colonna];
+                char pezzoDopo = dopo[riga][colonna];
+
+                if (pezzoPrima == pezzoDopo) {
+                    continue;
+                }
+
+                if (pezzoPrima != '.' && isPezzoDelColore(pezzoPrima, biancoCheHaMosso)) {
+                    rigaPartenza = riga;
+                    colonnaPartenza = colonna;
+                }
+
+                if (pezzoDopo != '.' && isPezzoDelColore(pezzoDopo, biancoCheHaMosso)) {
+                    rigaArrivo = riga;
+                    colonnaArrivo = colonna;
+                }
+            }
+        }
+
+        if (rigaPartenza == -1 || rigaArrivo == -1) {
+            return new int[] {-1, -1, -1, -1};
+        }
+
+        return new int[] {rigaPartenza, colonnaPartenza, rigaArrivo, colonnaArrivo};
     }
 
 }
