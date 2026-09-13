@@ -1,8 +1,8 @@
-package Scuola.Progettini.Pokemon.Types.HybridItems;
+package terzaIC.Progettini.Pokemon.Types.HybridItems;
 
-import Scuola.Progettini.Pokemon.Exceptions.UnsupportedActionException;
-import Scuola.Progettini.Pokemon.Other.Pokemon;
-import Scuola.Progettini.Pokemon.Types.Item;
+import terzaIC.Progettini.Pokemon.Exceptions.UnsupportedActionException;
+import terzaIC.Progettini.Pokemon.Other.Pokemon;
+import terzaIC.Progettini.Pokemon.Types.Item;
 
 public class AttackBoost extends Item implements HybridItem {
 

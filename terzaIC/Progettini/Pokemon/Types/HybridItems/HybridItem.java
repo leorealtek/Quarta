@@ -1,6 +1,6 @@
-package Scuola.Progettini.Pokemon.Types.HybridItems;
+package terzaIC.Progettini.Pokemon.Types.HybridItems;
 
-import Scuola.Progettini.Pokemon.Types.Consumables.Consumable;
-import Scuola.Progettini.Pokemon.Types.HeldItems.HeldItem;
+import terzaIC.Progettini.Pokemon.Types.Consumables.Consumable;
+import terzaIC.Progettini.Pokemon.Types.HeldItems.HeldItem;
 
 public interface HybridItem extends Consumable, HeldItem {}

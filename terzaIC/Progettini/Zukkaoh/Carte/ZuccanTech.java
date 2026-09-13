@@ -1,7 +1,7 @@
-package Scuola.Progettini.Zukkaoh.Carte;
+package terzaIC.Progettini.Zukkaoh.Carte;
 
-import Scuola.Progettini.Zukkaoh.Enum.*;
-import Scuola.Progettini.Zukkaoh.Utility.*;
+import terzaIC.Progettini.Zukkaoh.Enum.*;
+import terzaIC.Progettini.Zukkaoh.Utility.*;
 
 public class ZuccanTech extends Carta {
 

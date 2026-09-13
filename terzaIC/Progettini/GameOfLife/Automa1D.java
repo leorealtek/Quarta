@@ -1,4 +1,4 @@
-package Scuola.Progettini.GameOfLife;
+package terzaIC.Progettini.GameOfLife;
 
 public class Automa1D {
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";

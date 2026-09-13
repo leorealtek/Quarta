@@ -1,9 +1,9 @@
-package Scuola.Progettini.Pokemon.Types.Consumables;
+package terzaIC.Progettini.Pokemon.Types.Consumables;
 
-import Scuola.Progettini.Pokemon.Exceptions.UnsupportedActionException;
-import Scuola.Progettini.Pokemon.Other.Pokemon;
-import Scuola.Progettini.Pokemon.Other.Status;
-import Scuola.Progettini.Pokemon.Types.Item;
+import terzaIC.Progettini.Pokemon.Exceptions.UnsupportedActionException;
+import terzaIC.Progettini.Pokemon.Other.Pokemon;
+import terzaIC.Progettini.Pokemon.Other.Status;
+import terzaIC.Progettini.Pokemon.Types.Item;
 
 public class Revitalizing extends Item implements Consumable{
 

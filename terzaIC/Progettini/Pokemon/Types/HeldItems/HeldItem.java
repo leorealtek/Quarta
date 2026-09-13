@@ -1,6 +1,6 @@
-package Scuola.Progettini.Pokemon.Types.HeldItems;
+package terzaIC.Progettini.Pokemon.Types.HeldItems;
 
-import Scuola.Progettini.Pokemon.Other.Pokemon;
+import terzaIC.Progettini.Pokemon.Other.Pokemon;
 
 public interface HeldItem {
     public default void giveTo(Pokemon p) {

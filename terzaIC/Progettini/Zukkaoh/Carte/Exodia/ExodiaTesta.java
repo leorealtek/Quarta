@@ -1,6 +1,6 @@
-package Scuola.Progettini.Zukkaoh.Carte.Exodia;
+package terzaIC.Progettini.Zukkaoh.Carte.Exodia;
 
-import Scuola.Progettini.Zukkaoh.Carte.Carta;
+import terzaIC.Progettini.Zukkaoh.Carte.Carta;
 
 public class ExodiaTesta extends Carta {
 

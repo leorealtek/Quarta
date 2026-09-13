@@ -1,4 +1,4 @@
-package Scuola.Progettini.Zukkaoh.Enum;
+package terzaIC.Progettini.Zukkaoh.Enum;
 
 public enum Abilita {
     VELENO("Danno +5, Difesa Avversario = 0"),

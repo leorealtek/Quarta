@@ -1,10 +1,10 @@
-package Scuola.Progettini.Pokemon.Other;
+package terzaIC.Progettini.Pokemon.Other;
 
 import java.util.*;
-import Scuola.Progettini.Pokemon.Exceptions.UnsupportedActionException;
-import Scuola.Progettini.Pokemon.Types.Item;
-import Scuola.Progettini.Pokemon.Types.Consumables.Consumable;
-import Scuola.Progettini.Pokemon.Types.HeldItems.HeldItem;
+import terzaIC.Progettini.Pokemon.Exceptions.UnsupportedActionException;
+import terzaIC.Progettini.Pokemon.Types.Item;
+import terzaIC.Progettini.Pokemon.Types.Consumables.Consumable;
+import terzaIC.Progettini.Pokemon.Types.HeldItems.HeldItem;
 
 public class Inventory {
 

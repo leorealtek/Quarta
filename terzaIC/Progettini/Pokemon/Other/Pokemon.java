@@ -1,9 +1,9 @@
-package Scuola.Progettini.Pokemon.Other;
+package terzaIC.Progettini.Pokemon.Other;
 
-import Scuola.Progettini.Pokemon.Exceptions.NegativeAttackException;
-import Scuola.Progettini.Pokemon.Exceptions.NegativeHpException;
-import Scuola.Progettini.Pokemon.Exceptions.OverMaxHpException;
-import Scuola.Progettini.Pokemon.Types.HeldItems.HeldItem;
+import terzaIC.Progettini.Pokemon.Exceptions.NegativeAttackException;
+import terzaIC.Progettini.Pokemon.Exceptions.NegativeHpException;
+import terzaIC.Progettini.Pokemon.Exceptions.OverMaxHpException;
+import terzaIC.Progettini.Pokemon.Types.HeldItems.HeldItem;
 
 public class Pokemon {
     protected final String name;

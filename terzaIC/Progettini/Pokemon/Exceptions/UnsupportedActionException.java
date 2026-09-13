@@ -1,4 +1,4 @@
-package Scuola.Progettini.Pokemon.Exceptions;
+package terzaIC.Progettini.Pokemon.Exceptions;
 
 public class UnsupportedActionException extends Exception {
     public UnsupportedActionException(String message) {

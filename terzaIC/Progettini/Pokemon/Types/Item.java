@@ -1,4 +1,4 @@
-package Scuola.Progettini.Pokemon.Types;
+package terzaIC.Progettini.Pokemon.Types;
 
 public abstract class Item {
     protected final String name;

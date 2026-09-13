@@ -1,4 +1,4 @@
-package Scuola.TPSIT.ZImage;
+package terzaIC.TPSIT.ZImage;
 
 import java.util.Objects;
 import java.util.Scanner;

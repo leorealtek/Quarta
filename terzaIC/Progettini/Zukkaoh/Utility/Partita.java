@@ -1,4 +1,4 @@
-package Scuola.Progettini.Zukkaoh.Utility;
+package terzaIC.Progettini.Zukkaoh.Utility;
 
 public class Partita {
     private final Giocatore giocatore1;

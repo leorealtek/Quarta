@@ -1,4 +1,4 @@
-package Scuola.Progettini.Zukkaoh.Enum;
+package terzaIC.Progettini.Zukkaoh.Enum;
 
 import java.util.Random;
 

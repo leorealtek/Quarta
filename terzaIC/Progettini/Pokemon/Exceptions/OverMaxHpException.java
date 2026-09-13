@@ -1,4 +1,4 @@
-package Scuola.Progettini.Pokemon.Exceptions;
+package terzaIC.Progettini.Pokemon.Exceptions;
 
 public class OverMaxHpException extends RuntimeException {
     public OverMaxHpException(int hp, int hpMax) {

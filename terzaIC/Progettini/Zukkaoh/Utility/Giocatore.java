@@ -1,10 +1,10 @@
-package Scuola.Progettini.Zukkaoh.Utility;
+package terzaIC.Progettini.Zukkaoh.Utility;
 
 import java.util.Random;
 
-import Scuola.Progettini.Zukkaoh.Carte.*;
-import Scuola.Progettini.Zukkaoh.Carte.Exodia.*;
-import Scuola.Progettini.Zukkaoh.Enum.*;
+import terzaIC.Progettini.Zukkaoh.Carte.*;
+import terzaIC.Progettini.Zukkaoh.Carte.Exodia.*;
+import terzaIC.Progettini.Zukkaoh.Enum.*;
 
 public class Giocatore {
     protected final String nome;

@@ -1,4 +1,4 @@
-package Scuola.Progettini.GameOfLife.LangtonAnt;
+package terzaIC.Progettini.GameOfLife.LangtonAnt;
 
 public class Cella {
     public boolean ant = false;

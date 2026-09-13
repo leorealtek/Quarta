@@ -1,4 +1,4 @@
-package Scuola.Progettini.GameOfLife;
+package terzaIC.Progettini.GameOfLife;
 
 public class AutomaPersonalizzato extends Automa1D {
     public AutomaPersonalizzato(int larghezza) {

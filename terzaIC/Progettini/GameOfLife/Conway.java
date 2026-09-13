@@ -1,4 +1,4 @@
-package Scuola.Progettini.GameOfLife;
+package terzaIC.Progettini.GameOfLife;
 
 import java.util.Scanner;
 

@@ -1,8 +1,8 @@
-package Scuola.Progettini.Pokemon.Types.Consumables;
+package terzaIC.Progettini.Pokemon.Types.Consumables;
 
-import Scuola.Progettini.Pokemon.Exceptions.OverMaxHpException;
-import Scuola.Progettini.Pokemon.Other.Pokemon;
-import Scuola.Progettini.Pokemon.Types.Item;
+import terzaIC.Progettini.Pokemon.Exceptions.OverMaxHpException;
+import terzaIC.Progettini.Pokemon.Other.Pokemon;
+import terzaIC.Progettini.Pokemon.Types.Item;
 
 public class HealPotion extends Item implements Consumable {
     protected int heal = 20;

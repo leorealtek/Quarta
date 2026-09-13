@@ -1,4 +1,4 @@
-package Scuola.TPSIT.ZImage;
+package terzaIC.TPSIT.ZImage;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
