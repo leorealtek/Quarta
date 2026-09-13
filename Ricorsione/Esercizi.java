@@ -1,4 +1,4 @@
-package quartaIC;
+package Ricorsione;
 
 public class Esercizi {
 	/*
