@@ -26,6 +26,16 @@ class ContoBancario implements Verificabile {
         this.saldo = saldo;
     }
 
+    public double versamento(double importo) {
+        saldo += importo;
+        return importo;
+    }
+
+    public double prelievo(double importo) {
+        saldo -= importo;
+        return importo;
+    }
+
     @Override
     public double getValoreRischio() {
         return (saldo < 0) ? Math.abs(saldo) : 0;
@@ -59,6 +69,10 @@ class ImmagineDigitale implements Verificabile {
         this.megaByte = megaByte;
     }
 
+    public void blackAndWhite() {
+        megaByte *= 0.80;
+    }
+
     @Override
     public double getValoreRischio() {
         return megaByte;
@@ -90,6 +104,18 @@ class PaccoSpedizione implements Verificabile {
     public PaccoSpedizione(String codiceTracciamento, double pesoKg) {
         this.codiceTracciamento = codiceTracciamento;
         this.pesoKg = pesoKg;
+    }
+
+    public static boolean[] spedisci(PaccoSpedizione[] pacchi) {
+        boolean[] spedizioni = new boolean[pacchi.length];
+        for (int i = 0; i < spedizioni.length; i++) {
+            spedizioni[i] = pacchi[i].tentaConsegna();
+        }
+        return spedizioni;
+    }
+
+    public boolean tentaConsegna() {
+        return Math.random() * 100 > getValoreRischio();
     }
 
     @Override
@@ -194,5 +220,11 @@ public class DemoRischio {
         
         System.out.println("\n--- VALUTAZIONE IMMAGINE ---");
         GestioneRischio.ispeziona(inventario[1]);
+
+        System.out.println("\n--- ESERCIZIO DUE ---");
+        boolean[] spedizioni = PaccoSpedizione.spedisci(new PaccoSpedizione[]{new PaccoSpedizione("BAC2333", 4.5d), new PaccoSpedizione("EFUHEF348734", 46.8d), new PaccoSpedizione("GFYEG222", 67.67d)});
+        for (int i = 0; i < spedizioni.length; i++) {
+            System.out.println("Pacco " + (i + 1) + " Spedito: " + spedizioni[i]);
+        }
     }
 }
