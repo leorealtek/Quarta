@@ -39,7 +39,7 @@ public class PassioneCinematografica extends PassioneGenerica implements Classif
 
     @Override
     public String toString() {
-        return "[FILM]" + super.toString();
+        return "[FILM] " + super.toString();
     }
 
 }

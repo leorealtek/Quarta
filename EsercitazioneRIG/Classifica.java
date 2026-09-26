@@ -2,10 +2,14 @@ package EsercitazioneRIG;
 
 public class Classifica<T extends PassioneGenerica & Classificabile> {
 
-    public PassioneGenerica[] top = new PassioneGenerica[5];
+    private PassioneGenerica[] top = new PassioneGenerica[5];
 
     public void stampaClassifica() {
-
+        for (int i = 0; i < top.length; i++) {
+            if (top[i] != null) {
+                System.out.println((i + 1) + ". " + ((Classificabile) top[i]).nomeClassifica());
+            }
+        }
     }
     
     public boolean inserisciNuovoElemento(T elemento, int posizione) {
@@ -36,7 +40,7 @@ public class Classifica<T extends PassioneGenerica & Classificabile> {
     }
 
     public int cercaElemento(T elemento, int index) {
-        if (index >= top.length || top[index].getTitolo() == null) return -1;
+        if (index >= top.length || top[index] == null) return -1;
         if (top[index].equals(elemento)) return index + 1;
         else return cercaElemento(elemento, index + 1);
     }

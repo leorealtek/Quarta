@@ -13,7 +13,7 @@ public class PassioneMusicale extends PassioneGenerica implements Classificabile
 
     @Override
     public String nomeClassifica() {
-        return nomeArtista + " - " + super.toString().replace("\"", "");
+        return nomeArtista + " - " + titolo;
     }
 
     public String getNomeArtista() {
@@ -26,7 +26,7 @@ public class PassioneMusicale extends PassioneGenerica implements Classificabile
 
     @Override
     public String toString() {
-        return "[DISCO]" + super.toString();
+        return "[DISCO] " + super.toString();
     }
 
 }
