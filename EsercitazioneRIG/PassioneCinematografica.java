@@ -7,8 +7,9 @@ public class PassioneCinematografica extends PassioneGenerica implements Classif
     private String nomeAttore;
     private String nomeAttrice;
 
-    public PassioneCinematografica(String titolo, String nomeRegista, String nomeAttore, String nomeAttrice) {
+    public PassioneCinematografica(String titolo, int annoUscita, String nomeRegista, String nomeAttore, String nomeAttrice) {
         super(titolo);
+        this.annoUscita = annoUscita;
         this.nomeRegista = nomeRegista;
         this.nomeAttore = nomeAttore;
         this.nomeAttrice = nomeAttrice;
@@ -16,7 +17,7 @@ public class PassioneCinematografica extends PassioneGenerica implements Classif
 
     @Override
     public String nomeClassifica() {
-        return titolo + " di " + nomeRegista + " (starring " + nomeAttore + ", " + nomeAttrice;
+        return titolo + " di " + nomeRegista + " (starring " + nomeAttore + ", " + nomeAttrice + ")";
     }
 
 
@@ -38,7 +39,7 @@ public class PassioneCinematografica extends PassioneGenerica implements Classif
 
     @Override
     public String toString() {
-        return "[" + getClass().getSimpleName() + "]" + super.toString();
+        return "[FILM]" + super.toString();
     }
 
 }

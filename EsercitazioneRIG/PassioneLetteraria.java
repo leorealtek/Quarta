@@ -32,7 +32,7 @@ public class PassioneLetteraria extends PassioneGenerica implements Classificabi
 
     @Override
     public String toString() {
-        return "[" + getClass().getSimpleName() + "]" + super.toString();
+        return "[LIBRO]" + super.toString();
     }
 
 }

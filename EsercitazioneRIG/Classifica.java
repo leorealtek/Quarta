@@ -1,47 +1,43 @@
 package EsercitazioneRIG;
 
-public class Classifica<T extends PassioneGenerica> {
+public class Classifica<T extends PassioneGenerica & Classificabile> {
 
     public PassioneGenerica[] top = new PassioneGenerica[5];
 
-    public void stampaClassifica(Classifica<T> c) {
-        for (PassioneGenerica passioneGenerica : c.top) {
-            
-        }
+    public void stampaClassifica() {
+
     }
     
-    public boolean inserisciNuovoElemento(Classifica<T> c, T elemento, int posizione) {
-        if(posizione > 4 || posizione < 0) return false;
-        if(c.top[posizione] == null) { 
-            c.top[posizione] = elemento;
+    public boolean inserisciNuovoElemento(T elemento, int posizione) {
+        if (posizione < 0 || posizione >= top.length)
             return false;
+
+        boolean rimosso = top[top.length - 1] != null;
+
+        for (int i = top.length - 1; i > posizione; i--) {
+            top[i] = top[i - 1];
         }
-        if (posizione != 4) {
-            for (int i = c.top.length - 1; posizione < i; i--) {
-            c.top[i] = c.top[i - 1];
-            }
-        }
-        c.top[posizione] = elemento;
-        return true;
+
+        top[posizione] = elemento;
+
+        return rimosso;
     }
 
-    public void rimuoviElemento(Classifica<T> c, int posizione) {
-        if(posizione > 4 || posizione < 0) return;
-        for (int i = posizione; i < c.top.length - 2; i++) {
-            c.top[i + 1] = c.top[i];
+    public void rimuoviElemento(int posizione) {
+        if(posizione >= top.length || posizione < 0) return;
+        for (int i = posizione; i < top.length - 1; i++) {
+            top[i] = top[i + 1];
         }
-        c.top[c.top.length - 1] = null;
+        top[top.length - 1] = null;
     }
 
-    public void primoElemento(Classifica<T> c) {
-        if (c.top[0] != null) System.out.println(c.top[0]);
+    public void primoElemento() {
+        if (top[0] != null) System.out.println(top[0]);
     }
 
-    public int cercaElemento(Classifica<T> c, T elemento, int index) {
-        int posizione;
-        if (index > 4) posizione = -1;
-        if (c.top[index].getTitolo().equals(elemento.getTitolo())) posizione = index;
-        else posizione = cercaElemento(c, elemento, index + 1);
-        return posizione + 1;
+    public int cercaElemento(T elemento, int index) {
+        if (index >= top.length || top[index].getTitolo() == null) return -1;
+        if (top[index].equals(elemento)) return index + 1;
+        else return cercaElemento(elemento, index + 1);
     }
 }

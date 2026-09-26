@@ -17,4 +17,14 @@ public class PassioneGenerica{
         return titolo;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof PassioneGenerica))
+            return false;
+
+        PassioneGenerica altra = (PassioneGenerica) obj;
+
+        return titolo.equals(altra.titolo);
+    }
+
 }
