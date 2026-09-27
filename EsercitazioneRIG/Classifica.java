@@ -28,7 +28,7 @@ public class Classifica<T extends Classificabile> {
     }
 
     public void rimuoviElemento(int posizione) {
-        if(posizione >= top.length || posizione < 0) return;
+        if(posizione >= top.length || posizione < 0) throw new IllegalArgumentException("Posizione non valida");
         for (int i = posizione; i < top.length - 1; i++) {
             top[i] = top[i + 1];
         }
@@ -36,7 +36,12 @@ public class Classifica<T extends Classificabile> {
     }
 
     public void primoElemento() {
-        if (top[0] != null) System.out.println(top[0]);
+        for (Classificabile elemento : top) {
+            if (elemento != null) {
+                System.out.println("Primo elemento: " + elemento.nomeClassifica());
+                return;
+            }
+        }
     }
 
     public int cercaElemento(T elemento) {
