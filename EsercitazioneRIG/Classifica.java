@@ -1,8 +1,8 @@
 package EsercitazioneRIG;
 
-public class Classifica<T extends PassioneGenerica & Classificabile> {
+public class Classifica<T extends Classificabile> {
 
-    private PassioneGenerica[] top = new PassioneGenerica[5];
+    private Classificabile[] top = new Classificabile[5];
 
     public void stampaClassifica() {
         for (int i = 0; i < top.length; i++) {

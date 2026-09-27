@@ -1,6 +1,6 @@
 package EsercitazioneRIG;
 
-public class PassioneMusicale extends PassioneGenerica implements Classificabile{
+public class PassioneMusicale extends PassioneGenerica {
 
     private String nomeArtista;
     private int numeroTracce;

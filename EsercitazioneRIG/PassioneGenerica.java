@@ -1,6 +1,6 @@
 package EsercitazioneRIG;
 
-public class PassioneGenerica{
+public class PassioneGenerica implements Classificabile {
     
     protected String titolo;
 
@@ -25,6 +25,11 @@ public class PassioneGenerica{
         PassioneGenerica altra = (PassioneGenerica) obj;
 
         return titolo.equals(altra.titolo);
+    }
+
+    @Override
+    public String nomeClassifica() {
+        return toString();
     }
 
 }
