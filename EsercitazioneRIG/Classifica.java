@@ -7,7 +7,7 @@ public class Classifica<T extends Classificabile> {
     public void stampaClassifica() {
         for (int i = 0; i < top.length; i++) {
             if (top[i] != null) {
-                System.out.println((i + 1) + ". " + ((Classificabile) top[i]).nomeClassifica());
+                System.out.println((i + 1) + ". " + top[i].nomeClassifica());
             }
         }
     }
@@ -39,9 +39,19 @@ public class Classifica<T extends Classificabile> {
         if (top[0] != null) System.out.println(top[0]);
     }
 
-    public int cercaElemento(T elemento, int index) {
-        if (index >= top.length || top[index] == null) return -1;
-        if (top[index].equals(elemento)) return index + 1;
-        else return cercaElemento(elemento, index + 1);
+    public int cercaElemento(T elemento) {
+        return cercaElemento(elemento, 0);
+    }
+
+    private int cercaElemento(T elemento, int index) {
+        if (index >= top.length) {
+            return -1;
+        }
+
+        if (top[index] != null && top[index].equals(elemento)) {
+            return index + 1;
+        }
+
+        return cercaElemento(elemento, index + 1);
     }
 }
