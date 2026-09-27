@@ -38,7 +38,7 @@ public class Classifica<T extends Classificabile> {
     public void primoElemento() {
         for (Classificabile elemento : top) {
             if (elemento != null) {
-                System.out.println("Primo elemento: " + elemento.nomeClassifica());
+                System.out.println("Primo elemento: " + elemento);
                 return;
             }
         }
