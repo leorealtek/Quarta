@@ -61,13 +61,4 @@ public class Coda<T extends Processabile> {
         return ID;
     }
 
-    public T getTipo() {
-        for (Processabile elemento : coda) {
-            if (elemento != null) {
-                return (T) elemento;
-            }
-        }
-        return null;
-    }
-    
 }
