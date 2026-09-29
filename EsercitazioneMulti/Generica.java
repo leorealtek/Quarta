@@ -10,7 +10,7 @@ public class Generica implements Processabile {
 
     @Override
     public String toString() {
-        return "(Codice: " + codiceIdentificativo + ")";
+        return "(Codice: {" + codiceIdentificativo + "})";
     }
 
     public String getTitolo() {

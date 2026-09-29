@@ -1,9 +1,15 @@
 package EsercitazioneMulti;
 
 public class Coda<T extends Processabile> {
-    private Processabile[] coda = new Processabile[5];
+    private T[] coda = (T[]) new Processabile[5];
+    private final int ID;
+
+    public Coda(int ID) {
+        this.ID = ID;
+    }
 
     public boolean inserisciNuovoElemento(T elemento, int posizione) {
+        posizione--;
         if (posizione < 0 || posizione >= coda.length) return false;
 
         boolean rimosso = coda[coda.length - 1] != null;
@@ -18,6 +24,7 @@ public class Coda<T extends Processabile> {
     }
 
     public void rimuoviElemento(int posizione) {
+        posizione--; 
         if(posizione >= coda.length || posizione < 0) throw new IllegalArgumentException("Posizione non valida");
         for (int i = posizione; i < coda.length - 1; i++) {
             coda[i] = coda[i + 1];
@@ -46,4 +53,9 @@ public class Coda<T extends Processabile> {
         
         return cercaElemento(elemento, index + 1);
     }
+
+    public int getID() {
+        return ID;
+    }
+
 }
