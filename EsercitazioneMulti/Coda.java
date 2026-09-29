@@ -11,19 +11,13 @@ public class Coda<T extends Processabile> {
     }
 
     public boolean aggiungiElemento(T elemento, int posizione) {
-        if (elemento == null) {
-            throw new IllegalArgumentException("La richiesta non può essere null.");
-        }
+        if (posizione < 1 || posizione > coda.length) throw new IllegalArgumentException("La richiesta non può essere null.");
 
         boolean codaGenerica = tipo.equals(Processabile.class);
         boolean richiestaGenerica = elemento.getClass().equals(Generico.class);
 
-        if (!codaGenerica && !richiestaGenerica && !tipo.isInstance(elemento)) {
-            throw new IllegalArgumentException(
-                "La richiesta non è compatibile con questa coda."
-            );
-        }
-
+        if (!codaGenerica && !richiestaGenerica && !tipo.isInstance(elemento)) throw new IllegalArgumentException("La richiesta non è compatibile con questa coda.");
+        
         int numeroElementi = 0;
         for (Processabile elementoCoda : coda) {
             if (elementoCoda != null) numeroElementi++;
