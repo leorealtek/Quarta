@@ -18,6 +18,7 @@ public class Gestore {
 
     private Coda<Processabile> trovaCoda(int ID) {
         for (Coda<Processabile> coda : code) {
+            if (coda == null) break;
             if (coda.getID() == ID) return coda;
         }
         throw new IllegalArgumentException("Coda con ID: " + ID + " non trovata.");
