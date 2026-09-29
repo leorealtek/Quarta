@@ -1,29 +1,45 @@
 package EsercitazioneMulti;
 
-public class Gestore {
-    private Coda<Processabile>[] code;
+public class Gestore<T extends Processabile> {
+    private Coda<T>[] code;
 
-    public Gestore(int numeroCode) {
-        code = new Coda[numeroCode];
-    }
+    public Gestore(int[] IDCode) {
+        code = (Coda<T>[]) new Coda<?>[IDCode.length];
 
-    private boolean controllaID(int ID) {
-        for (Coda<Processabile> coda : code) {
-            if (coda != null && coda.getID() == ID) {
-                return true;
+        for (int i = 0; i < IDCode.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (IDCode[i] == IDCode[j]) {
+                    throw new IllegalArgumentException("ID duplicato");
+                }
             }
+            code[i] = new Coda<>(IDCode[i]);
         }
-        return false;
     }
 
-    private <T extends Processabile> boolean controllaTipo(T elemento, int ID) {
-        if (!controllaID(ID)) {
-            throw new IllegalArgumentException("ID non valido");
+    private Coda<T> trovaCoda(int ID) {
+        for (Coda<T> coda : code) {
+            if (coda.getID() == ID) return coda;
         }
-
-        if (elemento instanceof code[ID].getTipo()) return true;
-        
-        return false;
+        throw new IllegalArgumentException("ID elenco non valido");
     }
 
+    public boolean inserisciRichiesta(int ID, T richiesta, int posizione) {
+        Coda<T> destinazione = trovaCoda(ID);
+        return destinazione.aggiungiElemento(richiesta, posizione);
+    }
+
+    public void evadiRichiesta(int id, int posizione) {
+        Coda<T> elenco = trovaCoda(id);
+        elenco.rimuoviElemento(posizione);
+    }
+
+    public void prossimaInLavorazione(int id) {
+        Coda<T> elenco = trovaCoda(id);
+        elenco.primoElemento();
+    }
+
+    public int cercaRichiesta(int id, T richiesta) {
+        Coda<T> elenco = trovaCoda(id);
+        return elenco.cercaElemento(richiesta);
+    }
 }
