@@ -3,14 +3,25 @@ package EsercitazioneMulti;
 public class Coda<T extends Processabile> {
     private Processabile[] coda = new Processabile[5];
     private final int ID;
+    private final Class<T> tipo;
 
-    public Coda(int ID) {
+    public Coda(int ID, Class<T> tipo) {
         this.ID = ID;
+        this.tipo = tipo;
     }
 
     public boolean aggiungiElemento(T elemento, int posizione) {
-        if (posizione < 1 || posizione > coda.length) {
-            throw new IllegalArgumentException("Posizione non valida");
+        if (elemento == null) {
+            throw new IllegalArgumentException("La richiesta non può essere null.");
+        }
+
+        boolean codaGenerica = tipo.equals(Processabile.class);
+        boolean richiestaGenerica = elemento.getClass().equals(Generico.class);
+
+        if (!codaGenerica && !richiestaGenerica && !tipo.isInstance(elemento)) {
+            throw new IllegalArgumentException(
+                "La richiesta non è compatibile con questa coda."
+            );
         }
 
         int numeroElementi = 0;
@@ -56,6 +67,12 @@ public class Coda<T extends Processabile> {
         }
 
         return cercaElemento(richiesta, indice + 1);
+    }
+
+    public void stampaCoda() {
+        for (Processabile elemento : coda) {
+            if (elemento != null) System.out.println(elemento);
+        }
     }
 
     public int getID() {

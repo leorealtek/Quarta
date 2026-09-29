@@ -35,17 +35,18 @@ public class Main {
         Strumentazione s4 = new Strumentazione("NDS9U2F234", "AVANZATO", 1, "SE234243242234");
         Strumentazione s5 = new Strumentazione("AOKMCO3MUL", "AVANZATO", 1, "SE190823475076");
 
-        Coda<Generico> codaGenerica = new Coda<>(assegnaID());
-        Coda<Veicolo> codaVeicoli = new Coda<>(assegnaID());
-        Coda<Elettronico> codaElettronici = new Coda<>(assegnaID());
-        Coda<Strumentazione> codaStrumentazione = new Coda<>(assegnaID());
+        Coda<Generico> codaGenerica = new Coda<>(assegnaID(), Generico.class);
+        Coda<Veicolo> codaVeicoli = new Coda<>(assegnaID(), Veicolo.class);
+        Coda<Elettronico> codaElettronici = new Coda<>(assegnaID(), Elettronico.class);
+        Coda<Strumentazione> codaStrumentazione = new Coda<>(assegnaID(), Strumentazione.class);
 
         g.aggiungiCoda(codaGenerica);
         g.aggiungiCoda(codaVeicoli);
         g.aggiungiCoda(codaElettronici);
         g.aggiungiCoda(codaStrumentazione);
 
-        g.trovaCodaDaID(codaVeicoli.getID()).aggiungiElemento(v1, 4);
+        g.inserisciRichiesta(codaElettronici.getID(), v4, 4);
+        g.trovaCodaDaID(3).stampaCoda();
     }
 
 }
