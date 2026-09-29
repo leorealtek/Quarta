@@ -13,8 +13,7 @@ public class Classifica<T extends Classificabile> {
     }
     
     public boolean inserisciNuovoElemento(T elemento, int posizione) {
-        if (posizione < 0 || posizione >= top.length)
-            return false;
+        if (posizione < 0 || posizione >= top.length) return false;
 
         boolean rimosso = top[top.length - 1] != null;
 
@@ -49,14 +48,11 @@ public class Classifica<T extends Classificabile> {
     }
 
     private int cercaElemento(T elemento, int index) {
-        if (index >= top.length) {
-            return -1;
-        }
+        if (index >= top.length) return -1;
+        
 
-        if (top[index] != null && top[index].equals(elemento)) {
-            return index + 1;
-        }
-
+        if (top[index] != null && top[index].equals(elemento)) return index + 1;
+        
         return cercaElemento(elemento, index + 1);
     }
 }

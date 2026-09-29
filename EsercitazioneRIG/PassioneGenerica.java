@@ -19,8 +19,7 @@ public class PassioneGenerica implements Classificabile {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof PassioneGenerica))
-            return false;
+        if (obj == null || !(obj instanceof PassioneGenerica)) return false;
 
         PassioneGenerica altra = (PassioneGenerica) obj;
 

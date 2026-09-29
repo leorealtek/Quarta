@@ -15,14 +15,10 @@ public class Gestore {
         }
 
         for (int i = 0; i < numeroClassifiche; i++) {
-            if (classifiche[i] == classifica) {
-                return;
-            }
+            if (classifiche[i] == classifica) return;
         }
 
-        if (numeroClassifiche == classifiche.length) {
-            throw new IllegalArgumentException("Gestore pieno");
-        }
+        if (numeroClassifiche == classifiche.length) throw new IllegalArgumentException("Gestore pieno");
 
         classifiche[numeroClassifiche++] = classifica;
     }
