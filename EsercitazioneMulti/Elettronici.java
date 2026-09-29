@@ -13,7 +13,7 @@ public class Elettronici extends Generica{
 
     @Override
     public String processa() {
-        return modello + " - Guasto: " + tipoGuasto + " (" + super.toString() + ")";
+        return modello + " - Guasto: " + tipoGuasto + " " + super.processa();
     }
 
     @Override

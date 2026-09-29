@@ -15,7 +15,7 @@ public class Veicoli extends Generica {
 
     @Override
     public String processa() {
-        return targa + " (Proprietario: " + propietario + ") - KM: " + kmAttuali + " (Codice: " + super.toString() + ")";
+        return targa + " (Proprietario: " + propietario + ") - KM: " + kmAttuali + " " + super.processa();
     }
 
     @Override

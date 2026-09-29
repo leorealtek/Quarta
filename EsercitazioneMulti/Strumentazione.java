@@ -15,7 +15,7 @@ public class Strumentazione extends Generica {
 
     @Override
     public String processa() {
-        return categoriaSrtumento + "[" + numeroSerie + "] - Precisione: " + livelloPrecisione + "(Codice: " + super.toString() + ")";
+        return categoriaSrtumento + "[" + numeroSerie + "] - Precisione: " + livelloPrecisione + " " + super.processa();
     }
 
     @Override

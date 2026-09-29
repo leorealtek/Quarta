@@ -10,7 +10,7 @@ public class Generica implements Processabile {
 
     @Override
     public String toString() {
-        return "{" + codiceIdentificativo + "}";
+        return "(Codice: " + codiceIdentificativo + ")";
     }
 
     public String getTitolo() {
@@ -20,6 +20,15 @@ public class Generica implements Processabile {
     @Override
     public String processa() {
         return toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof Generica)) return false;
+
+        Generica altra = (Generica) obj;
+
+        return codiceIdentificativo.equals(altra.codiceIdentificativo);
     }
 
 }
