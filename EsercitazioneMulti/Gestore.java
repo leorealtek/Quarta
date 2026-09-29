@@ -1,45 +1,49 @@
 package EsercitazioneMulti;
 
 public class Gestore {
-    private Coda<? extends Processabile>[] code;
+    private Coda<Processabile>[] code;
 
-    public Gestore(int[] IDCode) {
-        code = (Coda<? extends Processabile>[]) new Coda<?>[IDCode.length];
-
-        for (int i = 0; i < IDCode.length; i++) {
-            for (int j = 0; j < i; j++) {
-                if (IDCode[i] == IDCode[j]) {
-                    throw new IllegalArgumentException("ID duplicato");
-                }
-            }
-            code[i] = new Coda<>(IDCode[i]);
-        }
+    public Gestore(int capacita) {
+        code = (Coda<Processabile>[]) new Coda<?>[capacita];
     }
 
-    private Coda<?> trovaCoda(int ID) {
-        for (Coda<? extends Processabile> coda : code) {
+    private int trovaSpazio() {
+        for (int i = 0; i < code.length; i++) {
+            if (code[i] == null) return i;
+        }
+        return -1;
+    }
+
+    public void aggiungiCoda(Coda<Processabile> coda, int ID) {
+        int spazio = trovaSpazio();
+        if (spazio == -1) throw new IllegalArgumentException("Il gestore è pieno.");
+        code[spazio] = new Coda<>(ID);
+    }
+
+    private Coda<Processabile> trovaCoda(int ID) {
+        for (Coda<Processabile> coda : code) {
             if (coda.getID() == ID) return coda;
         }
         throw new IllegalArgumentException("ID elenco non valido");
     }
 
-    public <T extends Processabile> boolean inserisciRichiesta(int ID, T richiesta, int posizione) {
+    public <T extends Generica> boolean inserisciRichiesta(int ID, T richiesta, int posizione) {
         Coda<? super T> destinazione = trovaCoda(ID);
         return destinazione.aggiungiElemento(richiesta, posizione);
     }
 
-    public void evadiRichiesta(int id, int posizione) {
-        Coda<? extends Processabile> elenco = trovaCoda(id);
+    public void evadiRichiesta(int ID, int posizione) {
+        Coda<? extends Processabile> elenco = trovaCoda(ID);
         elenco.rimuoviElemento(posizione);
     }
 
-    public void prossimaInLavorazione(int id) {
-        Coda<? extends Processabile> elenco = trovaCoda(id);
+    public void prossimaInLavorazione(int ID) {
+        Coda<? extends Processabile> elenco = trovaCoda(ID);
         elenco.primoElemento();
     }
 
-    public int cercaRichiesta(int id, T richiesta) {
-        Coda<? extends Processabile> elenco = trovaCoda(id);
+    public int cercaRichiesta(int ID, Processabile richiesta) {
+        Coda<? extends Processabile> elenco = trovaCoda(ID);
         return elenco.cercaElemento(richiesta);
     }
 }
