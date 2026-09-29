@@ -1,25 +1,33 @@
 package EsercitazioneMulti;
 
 public class Coda<T extends Processabile> {
-    private T[] coda = (T[]) new Processabile[5];
+    private Processabile[] coda = new Processabile[5];
     private final int ID;
 
     public Coda(int ID) {
         this.ID = ID;
     }
 
-    public boolean inserisciNuovoElemento(T elemento, int posizione) {
-        posizione--;
-        if (posizione < 0 || posizione >= coda.length) return false;
+    public boolean aggiungiElemento(T elemento, int posizione) {
+        if (posizione < 1 || posizione > coda.length) {
+            throw new IllegalArgumentException("Posizione non valida");
+        }
 
+        int indice = posizione - 1;
+
+        int numeroElementi = 0;
+        for (Processabile e : coda) {
+            if (e != null) numeroElementi++;
+        }
+
+        int indiceEffettivo = Math.min(indice, numeroElementi);
         boolean rimosso = coda[coda.length - 1] != null;
 
-        for (int i = coda.length - 1; i > posizione; i--) {
+        for (int i = coda.length - 1; i > indiceEffettivo; i--) {
             coda[i] = coda[i - 1];
         }
 
-        coda[posizione] = elemento;
-
+        coda[indiceEffettivo] = elemento;
         return rimosso;
     }
 
@@ -33,12 +41,7 @@ public class Coda<T extends Processabile> {
     }
 
     public void primoElemento() {
-        for (Processabile elemento : coda) {
-            if (elemento != null) {
-                System.out.println("Primo elemento: " + elemento);
-                return;
-            }
-        }
+        if (coda[0] != null) System.out.println("Primo elemento: " + coda[0]);
     }
 
     public int cercaElemento(T elemento) {
