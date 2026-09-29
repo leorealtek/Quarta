@@ -7,24 +7,20 @@ public class Gestore {
         code = (Coda<Processabile>[]) new Coda<?>[capacita];
     }
 
-    private int trovaSpazio() {
-        for (int i = 0; i < code.length; i++) {
-            if (code[i] == null) return i;
+    public void aggiungiCoda(Coda<Processabile> coda) {
+        int spazio = 0;
+        for (; spazio < code.length; spazio++) {
+            if (code[spazio] == null) break;
         }
-        return -1;
-    }
-
-    public void aggiungiCoda(Coda<Processabile> coda, int ID) {
-        int spazio = trovaSpazio();
         if (spazio == -1) throw new IllegalArgumentException("Il gestore è pieno.");
-        code[spazio] = new Coda<>(ID);
+        code[spazio] = coda;
     }
 
     private Coda<Processabile> trovaCoda(int ID) {
         for (Coda<Processabile> coda : code) {
             if (coda.getID() == ID) return coda;
         }
-        throw new IllegalArgumentException("ID elenco non valido");
+        throw new IllegalArgumentException("Coda con ID: " + ID + " non trovata.");
     }
 
     public <T extends Generica> boolean inserisciRichiesta(int ID, T richiesta, int posizione) {
