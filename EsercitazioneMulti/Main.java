@@ -44,6 +44,8 @@ public class Main {
         g.aggiungiCoda(codaVeicoli);
         g.aggiungiCoda(codaElettronici);
         g.aggiungiCoda(codaStrumentazione);
+
+        g.trovaCodaDaID(codaVeicoli.getID()).aggiungiElemento(v1, 4);
     }
 
 }
