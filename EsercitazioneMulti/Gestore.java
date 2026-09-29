@@ -12,7 +12,7 @@ public class Gestore {
         for (; spazio < code.length; spazio++) {
             if (code[spazio] == null) break;
         }
-        if (spazio == -1) throw new IllegalArgumentException("Il gestore è pieno.");
+        if (spazio == code.length) throw new IllegalArgumentException("Il gestore è pieno.");
         code[spazio] = coda;
     }
 
@@ -24,7 +24,7 @@ public class Gestore {
         throw new IllegalArgumentException("Coda con ID: " + ID + " non trovata.");
     }
 
-    public <T extends Generica> boolean inserisciRichiesta(int ID, T richiesta, int posizione) {
+    public <T extends Generico> boolean inserisciRichiesta(int ID, T richiesta, int posizione) {
         Coda<? super T> destinazione = trovaCoda(ID);
         return destinazione.aggiungiElemento(richiesta, posizione);
     }

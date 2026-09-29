@@ -1,11 +1,11 @@
 package EsercitazioneMulti;
 
-public class Elettronici extends Generica{
+public class Elettronico extends Generico {
 
     private String modello;
     private String tipoGuasto;
 
-    public Elettronici(String codiceIdentificativo, String modello, String tipoGuasto) {
+    public Elettronico(String codiceIdentificativo, String modello, String tipoGuasto) {
         super(codiceIdentificativo);
         this.modello = modello;
         this.tipoGuasto = tipoGuasto;

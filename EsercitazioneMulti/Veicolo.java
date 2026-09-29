@@ -1,12 +1,12 @@
 package EsercitazioneMulti;
 
-public class Veicoli extends Generica {
+public class Veicolo extends Generico {
 
     private String targa;
     private int kmAttuali;
     private String propietario;
 
-    public Veicoli(String codiceIdentificativo, String targa, int kmAttuali, String propietario) {
+    public Veicolo(String codiceIdentificativo, String targa, int kmAttuali, String propietario) {
         super(codiceIdentificativo);
         this.targa = targa;
         this.kmAttuali = kmAttuali;

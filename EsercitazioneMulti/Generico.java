@@ -1,10 +1,10 @@
 package EsercitazioneMulti;
 
-public class Generica implements Processabile {
+public class Generico implements Processabile {
     
     protected String codiceIdentificativo;
 
-    public Generica(String codiceIdentificativo) {
+    public Generico(String codiceIdentificativo) {
         this.codiceIdentificativo = codiceIdentificativo;
     }
 
@@ -24,9 +24,9 @@ public class Generica implements Processabile {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Generica)) return false;
+        if (obj == null || !(obj instanceof Generico)) return false;
 
-        Generica altra = (Generica) obj;
+        Generico altra = (Generico) obj;
 
         return codiceIdentificativo.equals(altra.codiceIdentificativo);
     }

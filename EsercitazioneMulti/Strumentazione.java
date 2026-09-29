@@ -1,6 +1,6 @@
 package EsercitazioneMulti;
 
-public class Strumentazione extends Generica {
+public class Strumentazione extends Generico {
 
     private String categoriaSrtumento;
     private int livelloPrecisione;
