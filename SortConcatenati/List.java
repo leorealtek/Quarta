@@ -98,4 +98,13 @@ public class List<T> {
             scan.setSucc(scan.getSucc().getSucc());
         }
     }
+
+    public void stampa() {
+        Nodo temp = this.testa;
+        for (int i = 0; i < this.length(); i++) {
+            System.out.print(temp.getDato() + " ");
+            temp = temp.getSucc();
+        }
+        System.out.println("");
+    }
 }

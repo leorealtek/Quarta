@@ -54,14 +54,10 @@ public class SortedList<T extends Comparable<T>> extends List<T> {
         do {
             swapped = false;
             for (int i = 0; i < length - count - 1; i++) {
-                Nodo successivo = testa.getSucc();
-                Nodo attuale = testa;
-                if (attuale.getDato().compareTo(successivo.getDato()) > 0) {
+                if (get(i).compareTo(get(i + 1)) > 0) {
                     swap(i, i + 1);
                     swapped = true;
                 }
-                attuale = successivo;
-                successivo = successivo.getSucc();
             }
             count++;
         } while (swapped);
