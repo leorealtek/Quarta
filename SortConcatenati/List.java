@@ -1,6 +1,8 @@
 package SortConcatenati;
 
-public class List<T> {
+import java.util.Iterator;
+
+public class List<T> implements Iterable<T> {
     protected class Nodo {
         private T dato;
         private Nodo succ;
@@ -26,6 +28,32 @@ public class List<T> {
         public void setSucc(Nodo succ) {
             this.succ = succ;
         }
+    }
+    private class Iteratore implements Iterator<T> {
+
+        private Nodo cursore;
+
+        public Iteratore() {
+            cursore = testa;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return cursore != null;
+        }
+
+        @Override
+        public T next() {
+            T temp = cursore.getDato();
+            cursore = cursore.getSucc();
+            return temp;
+        }
+
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iteratore();
     }
 
     protected Nodo testa;
@@ -99,12 +127,31 @@ public class List<T> {
         }
     }
 
-    public void stampa() {
-        Nodo temp = this.testa;
-        for (int i = 0; i < this.length(); i++) {
-            System.out.print(temp.getDato() + " ");
-            temp = temp.getSucc();
+    protected void swap(int pos1, int pos2) {
+        Nodo temp1 = null, temp2 = null, temp3 = testa;
+        for (int i = 0; i < pos2; i++) {
+            temp1 = temp2;
+            temp2 = temp3;
+            temp3 = temp3.getSucc();
         }
+        if (temp1 == null) {
+            temp2.setSucc(temp3.getSucc());
+            temp3.setSucc(temp2);
+            testa = temp3;
+        }
+        else {
+            temp1.setSucc(temp3);
+            temp2.setSucc(temp3.getSucc());
+            temp3.setSucc(temp2);
+        }
+    }
+
+    protected void swapp(int pos1, int pos2) {
+        
+    }
+
+    public void stampa() {
+        this.forEach(t -> System.out.println(t + " ") );
         System.out.println("");
     }
 }
