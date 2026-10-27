@@ -1,4 +1,4 @@
-package OrdinatoreNomi;
+package Lists.OrdinatoreNomi;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import SortConcatenati.List;
-import SortConcatenati.SortedList;
+import Lists.List;
+import Lists.SortedList;
 
 public class Ordinatore {
     private File file;
@@ -29,7 +29,7 @@ public class Ordinatore {
     }
 
     public void scriviFile() {
-        try (PrintWriter writer = new PrintWriter(new FileWriter("OrdinatoreNomi/NomiOrdinati.txt"))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("Lists/OrdinatoreNomi/NomiOrdinati.txt"))) {
             List<String> nomiOrdinati = leggiFile();
             nomiOrdinati.forEach(nome -> writer.write(nome + "\n"));
         } catch (IOException e) {

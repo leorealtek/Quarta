@@ -1,4 +1,4 @@
-package SortConcatenati;
+package Lists;
 
 public class SortedList<T extends Comparable<T>> extends List<T> {
     private boolean isSorted;
