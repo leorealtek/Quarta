@@ -8,7 +8,7 @@ public class SortedList<T extends Comparable<T>> extends List<T> {
         this.isSorted = true;
     }
 
-    public void insertSorted(T element) {
+    public void addSorted(T element) {
         if (!this.isSorted) sort();
         int l = this.length();
         if (l == 0) super.insert(element, 0);
@@ -33,18 +33,17 @@ public class SortedList<T extends Comparable<T>> extends List<T> {
         super.add(element);
     }
 
-    /*
-    public void sort() {
-        if (isSorted) return;
-        SortedList<T> nuovaLista = new SortedList<>();
-        for (int i = 0; i < this.length(); i++) {
-            nuovaLista.insertSorted(this.get(0));
-            this.remove(0);
-        }
-        this.testa = nuovaLista.testa;
-        swapped = true;
+    @Override
+    public void swapOnlyConsecutive(int pos1, int pos2) {
+        isSorted = false;
+        super.swapOnlyConsecutive(pos1, pos2);
     }
-    */
+
+    @Override
+    public void swap(int pos1, int pos2) {
+        isSorted = false;
+        super.swap(pos1, pos2);
+    }
 
     public void sort() {
         if (isSorted) return;
@@ -55,12 +54,22 @@ public class SortedList<T extends Comparable<T>> extends List<T> {
             swapped = false;
             for (int i = 0; i < length - count - 1; i++) {
                 if (get(i).compareTo(get(i + 1)) > 0) {
-                    swap(i, i + 1);
+                    swapOnlyConsecutive(i, i + 1);
                     swapped = true;
                 }
             }
             count++;
         } while (swapped);
         isSorted = true;
-    }    
+    }
+
+    public static void main(String[] args) {
+        SortedList<Integer> numeri = new SortedList<>();
+        numeri.add(2);
+        numeri.add(3);
+        numeri.add(1);
+        numeri.add(5);
+        numeri.sort();
+        numeri.print();
+    }
 }

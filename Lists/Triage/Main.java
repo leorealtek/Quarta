@@ -10,11 +10,11 @@ public class Main {
         Persona p3 = new Persona("Precision", 50, false, false);
         Persona p4 = new Persona("Giacchetto", 42, true, true);
         
-        listaPazienti.insertSorted(p1);
-        listaPazienti.insertSorted(p2);
-        listaPazienti.insertSorted(p3);
-        listaPazienti.insertSorted(p4);
+        listaPazienti.addSorted(p1);
+        listaPazienti.addSorted(p2);
+        listaPazienti.addSorted(p3);
+        listaPazienti.addSorted(p4);
 
-        listaPazienti.forEach(p -> System.out.println(p));
+        listaPazienti.printLine();
     }
 }

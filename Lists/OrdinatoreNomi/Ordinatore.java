@@ -22,7 +22,7 @@ public class Ordinatore {
         Scanner s = null;
         try { s = new Scanner(file); } catch (FileNotFoundException e) { e.printStackTrace(); }
         while (s.hasNext()) {
-            nomi.insertSorted(s.nextLine());
+            nomi.addSorted(s.nextLine());
         }
         s.close();
         return nomi;
@@ -40,7 +40,7 @@ public class Ordinatore {
     public static void main(String[] args) {
         String path = "OrdinatoreNomi/Nomi.txt";
         Ordinatore o = new Ordinatore(path);
-        o.leggiFile().stampa();
+        o.leggiFile().print();
         o.scriviFile();
     }
 }
