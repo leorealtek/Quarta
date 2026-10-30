@@ -132,8 +132,12 @@ public class List<T> implements Iterable<T> {
 
         int length = length();
 
-        if (pos1 < 0 || pos1 >= length || pos2 < 0 || pos2 >= length) {
-            throw new IndexOutOfBoundsException("Posizione fuori dai limiti");
+        if (pos1 < 0 || pos1 >= length) {
+            throw new IndexOutOfBoundsException("Posizione " + pos1 + " fuori dai limiti");
+        }
+
+        if (pos2 < 0 || pos2 >= length) {
+            throw new IndexOutOfBoundsException("Posizione " + pos2 + " fuori dai limiti");
         }
 
         Nodo temp1 = null, temp2 = null, temp3 = testa;
@@ -163,8 +167,12 @@ public class List<T> implements Iterable<T> {
 
         int length = length();
 
-        if (pos1 < 0 || pos1 >= length || pos2 < 0 || pos2 >= length) {
-            throw new IndexOutOfBoundsException("Posizione fuori dai limiti");
+        if (pos1 < 0 || pos1 >= length) {
+            throw new IndexOutOfBoundsException("Posizione " + pos1 + " fuori dai limiti");
+        }
+
+        if (pos2 < 0 || pos2 >= length) {
+            throw new IndexOutOfBoundsException("Posizione " + pos2 + " fuori dai limiti");
         }
 
         Nodo temp1 = null, temp2 = testa;
