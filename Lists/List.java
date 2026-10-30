@@ -1,6 +1,7 @@
 package Lists;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 public class List<T> implements Iterable<T> {
     protected class Nodo {
@@ -125,6 +126,26 @@ public class List<T> implements Iterable<T> {
             }
             scan.setSucc(scan.getSucc().getSucc());
         }
+    }
+
+    public void remove(T element) {
+        remove(indexOf(element));
+    }
+
+    public boolean contains(T element) {
+        for (T e : this) {
+            if (e == element) return true;
+        }
+        return false;
+    }
+
+    public int indexOf(T element) {
+        int count = 0;
+        for (T e : this) {
+            if (e.equals(element)) return count;
+            else count++;
+        }
+        return -1;
     }
 
     public void swapOnlyConsecutive(int pos1, int pos2) {
