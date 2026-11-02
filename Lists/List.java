@@ -1,6 +1,7 @@
 package Lists;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
 public class List<T> implements Iterable<T> {
     protected class Nodo {
@@ -147,17 +148,16 @@ public class List<T> implements Iterable<T> {
         return -1;
     }
 
-    public void swapOnlyConsecutive(int pos1, int pos2) {
-        if (pos2 - 1 != pos1) throw new IllegalArgumentException("Le due posizioni non sono consecutive");
-
+    public void swapConsecutive(int pos1) {
+        int pos2 = pos1 + 1;
         int length = length();
 
         if (pos1 < 0 || pos1 >= length) {
             throw new IndexOutOfBoundsException("Posizione " + pos1 + " fuori dai limiti");
         }
 
-        if (pos2 < 0 || pos2 >= length) {
-            throw new IndexOutOfBoundsException("Posizione " + pos2 + " fuori dai limiti");
+        if (pos2 >= length) {
+            return;
         }
 
         Nodo temp1 = null, temp2 = null, temp3 = testa;
@@ -224,6 +224,12 @@ public class List<T> implements Iterable<T> {
             temp4.setSucc(temp5);
             temp3.setSucc(temp2);
         }
+    }
+
+    public <E> List<E> map(Function<T, E> f) {
+        List<E> newList = new List<>();
+        forEach(e -> newList.add(f.apply(e)));
+        return newList;
     }
 
     public void print() {
