@@ -1,6 +1,8 @@
 package Lists;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Function;
 
 public class LinkedList<T> implements Iterable<T> {
     protected class Nodo {
@@ -91,6 +93,11 @@ public class LinkedList<T> implements Iterable<T> {
         this.length = 0;
     }
 
+    private int getPuntoMedio() {
+        return (length + 1) / 2;
+    }
+
+
     public T get(int p) {
         if (p < 0 || p >= length) {
             throw new IndexOutOfBoundsException("Posizione " + p + " fuori dai limiti");
@@ -105,7 +112,7 @@ public class LinkedList<T> implements Iterable<T> {
             }
             else {
                 scan = this.coda;
-                for (int i = length; p <= i; i--) {
+                for (int i = length - 1; i > p; i--) {
                     scan = scan.getPrec();
                 }
             }
@@ -215,30 +222,134 @@ public class LinkedList<T> implements Iterable<T> {
     }
 
     public void remove(T element) {
-        remove(indexOf(element));
+        Nodo scanTesta = testa;
+        Nodo scanCoda = coda;
+        int index = 0;
+        boolean find = false;
+
+        for (int i = 0; i < getPuntoMedio(); i++) {
+            if (scanTesta.getDato().equals(element)) {
+                index = i;
+                find = true;
+                break;
+            }
+            else if (scanCoda.getDato().equals(element)) {
+                index = length - i - 1;
+                find = true;
+                break;
+            }
+            scanTesta = scanTesta.getSucc();
+            scanCoda = scanCoda.getPrec();
+        }
+
+        if (!find) throw new IllegalArgumentException("L' elemento " + element + " non è nella lista");
+
+        if (length == 1) {
+            this.testa = null;
+            this.coda = null;
+        }
+
+        else if (length == 2) {
+            if (index == 0) {
+                this.coda.setPrec(null);
+                this.testa = coda;
+            }
+            else {
+                this.testa.setSucc(null);
+                this.coda = testa;
+            }
+        }
+
+        else if (index == 0) {
+            this.testa = this.testa.getSucc();
+            this.testa.setPrec(null);
+        }
+        
+        else if (index == length - 1) {
+            this.coda = this.coda.getPrec();
+            this.coda.setSucc(null);
+        }
+
+        else {
+            Nodo scan = (index < getPuntoMedio()) ? scanTesta : scanCoda;
+            scan.getPrec().setSucc(scan.getSucc());
+            scan.getSucc().setPrec(scan.getPrec());
+        }
     }
 
     public boolean contains(T element) {
-        Nodo scan = testa;
-        Nodo scan2 = coda;
-        for (int i = 0; i < ((length % 2 == 1) ? (length / 2) + 1 : length / 2); i++) {
-            if (scan.getDato().equals(element) || scan2.getDato().equals(element)) return true;
-            scan = scan.getSucc();
-            scan2 = scan.getPrec();
+        Nodo scanTesta = testa;
+        Nodo scanCoda = coda;
+        for (int i = 0; i < getPuntoMedio(); i++) {
+            if (scanTesta.getDato().equals(element) || scanCoda.getDato().equals(element)) return true;
+            scanTesta = scanTesta.getSucc();
+            scanCoda = scanCoda.getPrec();
         }
         return false;
     }
 
     public int indexOf(T element) {
-        Nodo scan = testa;
-        Nodo scan2 = coda;
-        for (int i = 0; i < ((length % 2 == 1) ? (length / 2) + 1 : length / 2); i++) {
-            if (scan.getDato().equals(element)) return i;
-            if (scan2.getDato().equals(element)) return length - i; // da sistemare
-            scan = scan.getSucc();
-            scan2 = scan.getPrec();
+        Nodo scanTesta = testa;
+        Nodo scanCoda = coda;
+        for (int i = 0; i < getPuntoMedio(); i++) {
+            if (scanTesta.getDato().equals(element)) return i;
+            if (scanCoda.getDato().equals(element)) return length - i - 1;
+            scanTesta = scanTesta.getSucc();
+            scanCoda = scanCoda.getPrec();
         }
         return -1;
+    }
+
+    public void swapConsecutive(int pos1) {
+        if (pos1 < 0 || pos1 >= length) {
+            throw new IndexOutOfBoundsException("Posizione " + pos1 + " fuori dai limiti");
+        }
+
+        if (pos1 + 1 == length) {
+            return;
+        }
+        
+        Nodo scan1;
+
+        if (pos1 < getPuntoMedio()) {
+            scan1 = testa;
+            for (int i = 0; i < pos1; i++) {
+                scan1 = scan1.getSucc();
+            }
+        }
+        else {
+            scan1 = coda;
+            for (int i = length - 1; i > pos1; i--) {
+                scan1 = scan1.getPrec();
+            }
+        }
+
+        Nodo scan2 = scan1.getSucc();
+
+        if (scan1 == testa) {
+            testa = scan2;
+        }
+        else {
+            scan1.getPrec().setSucc(scan2);
+        }
+
+        if (scan2 == coda) {
+            coda = scan1;
+        }
+        else {
+            scan1.getPrec().setSucc(scan2);
+        }
+
+        scan1.setSucc(scan2.getSucc());
+        scan2.setSucc(scan1);
+        scan2.setPrec(scan1.getPrec());
+        scan1.setPrec(scan2);
+    }
+
+    public <E> LinkedList<E> map(Function<T, E> f) {
+        LinkedList<E> newList = new LinkedList<>();
+        forEach(e -> newList.add(f.apply(e)));
+        return newList;
     }
 
     public void print() {
@@ -259,12 +370,11 @@ public class LinkedList<T> implements Iterable<T> {
 
         lista.add(2);
         lista.add(3);
-        lista.add(1);
-        lista.add(5);
-        lista.add(8);
-        lista.add(100);
-        lista.add(1087);
+        lista.add(244);
+        lista.add(24);
+        lista.add(2444);
+
+        lista.swapConsecutive(2);
         lista.print();
-        System.out.println(lista.contains(1087));
     }
 }
