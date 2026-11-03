@@ -58,24 +58,15 @@ public class List<T> implements Iterable<T> {
     }
 
     protected Nodo testa;
+    protected int length;
 
     public List() {
         this.testa = null;
-    }
-
-    public int length() {
-        Nodo scan = this.testa;
-        int i = 0;
-        while (scan != null) {
-            i++;
-            scan = scan.getSucc();
-        }
-        return i;
+        this.length = 0;
     }
      
     public T get(int p) {
-        int l = this.length();
-        if (p < 0 || p >= l) {
+        if (p < 0 || p >= length) {
             throw new IndexOutOfBoundsException("Posizione " + p + " fuori dai limiti");
         }
 
@@ -90,8 +81,7 @@ public class List<T> implements Iterable<T> {
     }
 
     public void insert(T elemento, int p) {
-        int l = this.length();
-        if (p < 0 || p > l) {
+        if (p < 0 || p > length) {
             throw new IndexOutOfBoundsException("Posizione " + p + " fuori dai limiti");
         }
         else if (p == 0) {
@@ -105,15 +95,15 @@ public class List<T> implements Iterable<T> {
             Nodo nuovo = new Nodo(elemento, scan.getSucc());
             scan.setSucc(nuovo);
         }
+        length++;
     }
 
     public void add(T element) {
-        this.insert(element, this.length());
+        this.insert(element, length);
     }
 
     public void remove(int p) {
-        int l = this.length();
-        if (p < 0 || p >= l) {
+        if (p < 0 || p >= length) {
             throw new IndexOutOfBoundsException("Posizione " + p + " fuori dai limiti");
         }
         else if (p == 0) {
@@ -126,10 +116,18 @@ public class List<T> implements Iterable<T> {
             }
             scan.setSucc(scan.getSucc().getSucc());
         }
+        length--;
     }
 
     public void remove(T element) {
-        remove(indexOf(element));
+        Nodo scan = this.testa;
+        for(int i = 0; i < length; i++) {
+            if (scan.equals(element)) {
+                scan.setSucc(scan.getSucc().getSucc());
+                return;
+            }
+            scan = scan.getSucc();
+        }
     }
 
     public boolean contains(T element) {
@@ -150,7 +148,6 @@ public class List<T> implements Iterable<T> {
 
     public void swapConsecutive(int pos1) {
         int pos2 = pos1 + 1;
-        int length = length();
 
         if (pos1 < 0 || pos1 >= length) {
             throw new IndexOutOfBoundsException("Posizione " + pos1 + " fuori dai limiti");
@@ -184,8 +181,6 @@ public class List<T> implements Iterable<T> {
         }
 
         if (pos1 == pos2) return;
-
-        int length = length();
 
         if (pos1 < 0 || pos1 >= length) {
             throw new IndexOutOfBoundsException("Posizione " + pos1 + " fuori dai limiti");
@@ -241,4 +236,9 @@ public class List<T> implements Iterable<T> {
         this.forEach(t -> System.out.println(t + " ") );
         System.out.println("");
     }
+
+    public int length() {
+        return length;
+    }
+    
 }

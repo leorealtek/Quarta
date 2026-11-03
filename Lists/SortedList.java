@@ -10,11 +10,10 @@ public class SortedList<T extends Comparable<T>> extends List<T> {
 
     public void addSorted(T element) {
         if (!this.isSorted) sort();
-        int l = this.length();
-        if (l == 0) super.insert(element, 0);
+        if (length == 0) super.insert(element, 0);
         else {
             int index = 0;
-            while (index < l && this.get(index).compareTo(element) < 0) {
+            while (index < length && this.get(index).compareTo(element) < 0) {
                 index++;
             }
             super.insert(element, index);
@@ -47,7 +46,6 @@ public class SortedList<T extends Comparable<T>> extends List<T> {
 
     public void sort() {
         if (isSorted) return;
-        int length = length();
         boolean swapped;
         int count = 0;
         do {
@@ -61,15 +59,5 @@ public class SortedList<T extends Comparable<T>> extends List<T> {
             count++;
         } while (swapped);
         isSorted = true;
-    }
-
-    public static void main(String[] args) {
-        SortedList<Integer> numeri = new SortedList<>();
-        numeri.add(2);
-        numeri.add(3);
-        numeri.add(1);
-        numeri.add(5);
-        numeri.sort();
-        numeri.print();
     }
 }
