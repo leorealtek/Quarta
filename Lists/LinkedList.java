@@ -234,7 +234,7 @@ public class LinkedList<T> implements Iterable<T> {
         Nodo scan2 = coda;
         for (int i = 0; i < ((length % 2 == 1) ? (length / 2) + 1 : length / 2); i++) {
             if (scan.getDato().equals(element)) return i;
-            if (scan2.getDato().equals(element)) return length - i;
+            if (scan2.getDato().equals(element)) return length - i; // da sistemare
             scan = scan.getSucc();
             scan2 = scan.getPrec();
         }
@@ -265,5 +265,6 @@ public class LinkedList<T> implements Iterable<T> {
         lista.add(100);
         lista.add(1087);
         lista.print();
+        System.out.println(lista.contains(1087));
     }
 }
