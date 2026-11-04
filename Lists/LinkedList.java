@@ -97,21 +97,21 @@ public class LinkedList<T> implements Iterable<T> {
     }
 
 
-    public T get(int p) {
-        if (p < 0 || p >= length) {
-            throw new IndexOutOfBoundsException("Posizione " + p + " fuori dai limiti");
+    public T get(int position) {
+        if (position < 0 || position >= length) {
+            throw new IndexOutOfBoundsException("Posizione " + position + " fuori dai limiti");
         }
         else {
             Nodo scan;
-            if (p < length / 2) {
+            if (position < length / 2) {
                 scan = this.testa;
-                for (int i = 0; i < p; i++) {
+                for (int i = 0; i < position; i++) {
                     scan = scan.getSucc();
                 }
             }
             else {
                 scan = this.coda;
-                for (int i = length - 1; i > p; i--) {
+                for (int i = length - 1; i > position; i--) {
                     scan = scan.getPrec();
                 }
             }
@@ -119,9 +119,9 @@ public class LinkedList<T> implements Iterable<T> {
         }
     }
 
-    public void insert(T elemento, int p) {
-        if (p < 0 || p > length) {
-            throw new IndexOutOfBoundsException("Posizione " + p + " fuori dai limiti");
+    public void insert(T elemento, int position) {
+        if (position < 0 || position > length) {
+            throw new IndexOutOfBoundsException("Posizione " + position + " fuori dai limiti");
         }
 
         else if (length == 0) {
@@ -129,13 +129,13 @@ public class LinkedList<T> implements Iterable<T> {
             this.coda = testa;
         }
 
-        else if (p == 0) {
+        else if (position == 0) {
             Nodo nuovo = new Nodo(elemento, testa);
             this.testa.setPrec(nuovo);
             this.testa = nuovo;
         }
 
-        else if (p == length) {
+        else if (position == length) {
             Nodo nuovo = new Nodo(coda, elemento);
             this.coda.setSucc(nuovo);
             this.coda = nuovo;
@@ -143,9 +143,9 @@ public class LinkedList<T> implements Iterable<T> {
 
         else {
             Nodo scan;
-            if (p < length / 2) {
+            if (position < length / 2) {
                 scan = this.testa;
-                for (int i = 0; i < p - 1; i++) {
+                for (int i = 0; i < position - 1; i++) {
                     scan = scan.getSucc();
                 }
                 Nodo nuovo = new Nodo(scan, elemento, scan.getSucc());
@@ -154,7 +154,7 @@ public class LinkedList<T> implements Iterable<T> {
             }
             else {
                 scan = this.coda;
-                for (int i = length - 1; p < i; i--) {
+                for (int i = length - 1; position < i; i--) {
                     scan = scan.getPrec();
                 }
                 Nodo nuovo = new Nodo(scan.getPrec(), elemento, scan);
@@ -169,9 +169,9 @@ public class LinkedList<T> implements Iterable<T> {
         this.insert(element, length);
     }
 
-    public void remove(int p) {
-        if (p < 0 || p >= length) {
-            throw new IndexOutOfBoundsException("Posizione " + p + " fuori dai limiti");
+    public void remove(int position) {
+        if (position < 0 || position >= length) {
+            throw new IndexOutOfBoundsException("Posizione " + position + " fuori dai limiti");
         }
 
         else if (length == 1) {
@@ -180,7 +180,7 @@ public class LinkedList<T> implements Iterable<T> {
         }
 
         else if (length == 2) {
-            if (p == 0) {
+            if (position == 0) {
                 this.coda.setPrec(null);
                 this.testa = coda;
             }
@@ -190,27 +190,27 @@ public class LinkedList<T> implements Iterable<T> {
             }
         }
 
-        else if (p == 0) {
+        else if (position == 0) {
             this.testa = this.testa.getSucc();
             this.testa.setPrec(null);
         }
         
-        else if (p == length - 1) {
+        else if (position == length - 1) {
             this.coda = this.coda.getPrec();
             this.coda.setSucc(null);
         }
 
         else {
             Nodo scan;
-            if (p < length / 2) {
+            if (position < length / 2) {
                 scan = this.testa;
-                for (int i = 0; i < p; i++) {
+                for (int i = 0; i < position; i++) {
                     scan = scan.getSucc();
                 }
             }
             else {
                 scan = this.coda;
-                for (int i = length - 1; p < i; i--) {
+                for (int i = length - 1; position < i; i--) {
                     scan = scan.getPrec();
                 }
             }
@@ -299,26 +299,26 @@ public class LinkedList<T> implements Iterable<T> {
         return -1;
     }
 
-    public void swapConsecutive(int pos1) {
-        if (pos1 < 0 || pos1 >= length) {
-            throw new IndexOutOfBoundsException("Posizione " + pos1 + " fuori dai limiti");
+    public void swapConsecutive(int position) {
+        if (position < 0 || position >= length) {
+            throw new IndexOutOfBoundsException("Posizione " + position + " fuori dai limiti");
         }
 
-        if (pos1 + 1 == length) {
+        if (position + 1 == length) {
             return;
         }
         
         Nodo scan1;
 
-        if (pos1 < getPuntoMedio()) {
+        if (position < getPuntoMedio()) {
             scan1 = testa;
-            for (int i = 0; i < pos1; i++) {
+            for (int i = 0; i < position; i++) {
                 scan1 = scan1.getSucc();
             }
         }
         else {
             scan1 = coda;
-            for (int i = length - 1; i > pos1; i--) {
+            for (int i = length - 1; i > position; i--) {
                 scan1 = scan1.getPrec();
             }
         }
@@ -364,16 +364,4 @@ public class LinkedList<T> implements Iterable<T> {
         return length;
     }
 
-    public static void main(String[] args) {
-        LinkedList<Integer> lista = new LinkedList<>();
-
-        lista.add(2);
-        lista.add(3);
-        lista.add(244);
-        lista.add(24);
-        lista.add(2444);
-
-        lista.swapConsecutive(2);
-        lista.print();
-    }
 }
