@@ -120,13 +120,22 @@ public class List<T> implements Iterable<T> {
     }
 
     public void remove(T element) {
-        Nodo scan = this.testa;
-        for(int i = 0; i < length; i++) {
-            if (scan.equals(element)) {
-                scan.setSucc(scan.getSucc().getSucc());
+        Nodo scan = null;
+        Nodo scan2 = testa;
+
+        for (int i = 0; i < length; i++) {
+            if (scan2.getDato().equals(element)) {
+                if (i == 0) {
+                    testa = testa.getSucc();
+                }
+                else {
+                    scan.setSucc(scan2.getSucc());
+                }
+                this.length--;
                 return;
             }
-            scan = scan.getSucc();
+            scan = scan2;
+            scan2 = scan2.getSucc();
         }
     }
 
@@ -219,6 +228,10 @@ public class List<T> implements Iterable<T> {
             temp4.setSucc(temp5);
             temp3.setSucc(temp2);
         }
+    }
+
+    public boolean isEmpty() {
+        return length == 0;
     }
 
     public <E> List<E> map(Function<T, E> f) {

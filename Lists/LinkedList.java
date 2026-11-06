@@ -92,7 +92,7 @@ public class LinkedList<T> implements Iterable<T> {
         this.length = 0;
     }
 
-    private int getPuntoMedio() {
+    protected int getPuntoMedio() {
         return (length + 1) / 2;
     }
 
@@ -274,6 +274,7 @@ public class LinkedList<T> implements Iterable<T> {
             scan.getPrec().setSucc(scan.getSucc());
             scan.getSucc().setPrec(scan.getPrec());
         }
+        this.length--;
     }
 
     public boolean contains(T element) {
@@ -343,6 +344,10 @@ public class LinkedList<T> implements Iterable<T> {
         scan2.setSucc(scan1);
         scan2.setPrec(scan1.getPrec());
         scan1.setPrec(scan2);
+    }
+
+    public boolean isEmpty() {
+        return length == 0;
     }
 
     public <E> LinkedList<E> map(Function<T, E> f) {
