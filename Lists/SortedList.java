@@ -33,12 +33,6 @@ public class SortedList<T extends Comparable<T>> extends List<T> {
     }
 
     @Override
-    public void swapConsecutive(int pos1) {
-        isSorted = false;
-        super.swapConsecutive(pos1);
-    }
-
-    @Override
     public void swap(int pos1, int pos2) {
         isSorted = false;
         super.swap(pos1, pos2);
@@ -52,7 +46,7 @@ public class SortedList<T extends Comparable<T>> extends List<T> {
             swapped = false;
             for (int i = 0; i < length - count - 1; i++) {
                 if (get(i).compareTo(get(i + 1)) > 0) {
-                    swapConsecutive(i);
+                    swap(i, i + 1);
                     swapped = true;
                 }
             }

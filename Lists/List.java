@@ -155,35 +155,6 @@ public class List<T> implements Iterable<T> {
         return -1;
     }
 
-    public void swapConsecutive(int pos1) {
-        int pos2 = pos1 + 1;
-
-        if (pos1 < 0 || pos1 >= length) {
-            throw new IndexOutOfBoundsException("Posizione " + pos1 + " fuori dai limiti");
-        }
-
-        if (pos2 >= length) {
-            return;
-        }
-
-        Nodo temp1 = null, temp2 = null, temp3 = testa;
-        for (int i = 0; i < pos2; i++) {
-            temp1 = temp2;
-            temp2 = temp3;
-            temp3 = temp3.getSucc();
-        }
-        if (temp1 == null) {
-            temp2.setSucc(temp3.getSucc());
-            temp3.setSucc(temp2);
-            testa = temp3;
-        }
-        else {
-            temp1.setSucc(temp3);
-            temp2.setSucc(temp3.getSucc());
-            temp3.setSucc(temp2);
-        }
-    }
-
     public void swap(int pos1, int pos2) {
         if (pos1 > pos2) {
             throw new IllegalArgumentException("La prima posizione deve essere minore della seconda");
