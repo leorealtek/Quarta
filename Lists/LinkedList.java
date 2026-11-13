@@ -355,7 +355,20 @@ public class LinkedList<T> implements Iterable<T> {
             }
         }
 
-        if (scanTesta == testa) {
+        if (scanTesta.getSucc() == scanCoda) {
+            scanTesta.setSucc(scanCoda.getSucc());
+            scanCoda.setPrec(scanTesta.getPrec());
+            scanCoda.setSucc(scanTesta);
+            scanTesta.setPrec(scanCoda);
+
+            if (scanTesta != testa) scanCoda.getPrec().setSucc(scanCoda);
+            if (scanCoda != coda) scanTesta.getSucc().setPrec(scanTesta);
+        
+            if (scanTesta == testa) testa = scanCoda;
+            if (scanCoda == coda) coda = scanTesta;
+        }
+
+        else if (scanTesta == testa && scanCoda != coda) {
             Nodo temp = scanTesta.getSucc();
             scanTesta.getSucc().setPrec(scanCoda);
             scanCoda.getPrec().setSucc(scanTesta);
@@ -369,7 +382,7 @@ public class LinkedList<T> implements Iterable<T> {
             testa = scanCoda;
         }
 
-        else if (scanCoda == coda) {
+        else if (scanTesta != testa && scanCoda == coda) {
             Nodo temp = scanCoda.getPrec();
             scanCoda.getPrec().setSucc(scanTesta);
             scanTesta.getPrec().setSucc(scanCoda);
@@ -384,21 +397,23 @@ public class LinkedList<T> implements Iterable<T> {
             coda = scanTesta;
         }
 
-        else {
-            Nodo temp = scanTesta;
-            scanTesta.getPrec().setSucc(scanCoda);
+        else if (scanTesta == testa && scanCoda == coda) {
             scanTesta.getSucc().setPrec(scanCoda);
-
             scanCoda.getPrec().setSucc(scanTesta);
-            scanCoda.getSucc().setPrec(scanTesta);
 
             scanTesta.setPrec(scanCoda.getPrec());
-            scanTesta.setSucc(scanCoda.getSucc());
-            
-            scanCoda.setPrec(temp.getPrec());
-            scanCoda.setSucc(temp.getSucc());
+            scanCoda.setSucc(scanTesta.getSucc());
+
+            scanTesta.setSucc(null);
+            scanCoda.setPrec(null);
+
+            coda = scanTesta;
+            testa = scanCoda;
         }
-        
+
+        else {
+            // da fare
+        }
     }
 
     public boolean isEmpty() {
@@ -427,13 +442,14 @@ public class LinkedList<T> implements Iterable<T> {
     public static void main(String[] args) {
         LinkedList<Integer> lista = new LinkedList<>();
 
-        lista.add(56);
+        lista.add(1);
         lista.add(2);
         lista.add(3);
         lista.add(4);
         lista.add(5);
         lista.add(6);
-        System.out.println(lista.indexOf(2));
+        lista.swap(1, 4);
+        lista.print();
     }
 
 }
