@@ -9,6 +9,12 @@ public class LinkedList<T> implements Iterable<T> {
         private final T dato;
         private Nodo succ;
         private Nodo prec;
+
+        public Nodo(Nodo nodo) {
+            this.prec = nodo.getPrec();
+            this.dato = nodo.getDato();
+            this.succ = nodo.getSucc();
+        }
          
         public Nodo(T dato) {
             this.prec = null;
@@ -109,13 +115,13 @@ public class LinkedList<T> implements Iterable<T> {
         else {
             Nodo scan;
             if (position < getPuntoMedio()) {
-                scan = this.testa;
+                scan = new Nodo(testa);
                 for (int i = 0; i < position; i++) {
                     scan = scan.getSucc();
                 }
             }
             else {
-                scan = this.coda;
+                scan = new Nodo(coda);
                 for (int i = length - 1; i > position; i--) {
                     scan = scan.getPrec();
                 }
@@ -208,13 +214,13 @@ public class LinkedList<T> implements Iterable<T> {
         else {
             Nodo scan;
             if (position < getPuntoMedio()) {
-                scan = this.testa;
+                scan = new Nodo(testa);
                 for (int i = 0; i < position; i++) {
                     scan = scan.getSucc();
                 }
             }
             else {
-                scan = this.coda;
+                scan = new Nodo(coda);
                 for (int i = length - 1; position < i; i--) {
                     scan = scan.getPrec();
                 }
@@ -226,8 +232,8 @@ public class LinkedList<T> implements Iterable<T> {
     }
 
     public void remove(T element) {
-        Nodo scanTesta = testa;
-        Nodo scanCoda = coda;
+        Nodo scanTesta = new Nodo(testa);
+        Nodo scanCoda = new Nodo(coda);
         int index = 0;
         boolean find = false;
 
@@ -283,8 +289,8 @@ public class LinkedList<T> implements Iterable<T> {
     }
 
     public boolean contains(T element) {
-        Nodo scanTesta = testa;
-        Nodo scanCoda = coda;
+        Nodo scanTesta = new Nodo(testa);
+        Nodo scanCoda = new Nodo(coda);
         for (int i = 0; i < getPuntoMedio(); i++) {
             if (scanTesta.getDato().equals(element) || scanCoda.getDato().equals(element)) return true;
             scanTesta = scanTesta.getSucc();
@@ -294,8 +300,8 @@ public class LinkedList<T> implements Iterable<T> {
     }
 
     public int indexOf(T element) {
-        Nodo scanTesta = testa;
-        Nodo scanCoda = coda;
+        Nodo scanTesta = new Nodo(testa);
+        Nodo scanCoda = new Nodo(coda);
         for (int i = 0; i < getPuntoMedio(); i++) {
             if (scanTesta.getDato().equals(element)) return i;
             if (scanCoda.getDato().equals(element)) return length - i - 1;
@@ -412,7 +418,19 @@ public class LinkedList<T> implements Iterable<T> {
         }
 
         else {
-            // da fare
+            Nodo temp = new Nodo(scanTesta);
+
+            scanTesta.getPrec().setSucc(scanCoda);
+            scanTesta.getSucc().setPrec(scanCoda);
+
+            scanCoda.getPrec().setSucc(scanTesta);
+            scanCoda.getSucc().setPrec(scanTesta);
+
+            scanTesta.setPrec(scanCoda.getPrec());
+            scanTesta.setSucc(scanCoda.getSucc());
+
+            scanCoda.setPrec(temp.getPrec());
+            scanCoda.setSucc(temp.getSucc());
         }
     }
 
@@ -435,21 +453,23 @@ public class LinkedList<T> implements Iterable<T> {
         this.forEach(t -> System.out.println(t + " ") );
     }
 
+    public void printlnBackwords() {
+        Nodo temp = new Nodo(coda);
+        for (int i = length; i > 0; i--) {
+            System.out.println(temp.getDato());
+            temp = temp.getPrec();
+        }
+    }
+
+    public void printBackwords() {
+        Nodo temp = new Nodo(coda);
+        for (int i = length; i > 0; i--) {
+            System.out.print(temp.getDato() + " ");
+            temp = temp.getPrec();
+        }
+    }
+
     public int length() {
         return length;
     }
-
-    public static void main(String[] args) {
-        LinkedList<Integer> lista = new LinkedList<>();
-
-        lista.add(1);
-        lista.add(2);
-        lista.add(3);
-        lista.add(4);
-        lista.add(5);
-        lista.add(6);
-        lista.swap(1, 4);
-        lista.print();
-    }
-
 }
