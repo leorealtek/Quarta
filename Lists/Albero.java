@@ -34,4 +34,16 @@ public class Albero<T> {
         System.out.println(n.getDato());
         n.getFigli().forEach(f -> stampaRic(f));
     }
+
+    public List<T> esportaAlberoDFS() {
+        List<T> risultato = new List<>();
+        esportazioneDFS(risultato, this.radice);
+        return risultato;
+    }
+
+    private void esportazioneDFS(List<T> heap, NodoAlbero n) {
+        if (n == null) return;
+        heap.add(n.getDato());
+        n.getFigli().forEach(f -> esportazioneDFS(heap, f));
+    }
 }
