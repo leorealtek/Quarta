@@ -91,8 +91,4 @@ public class Albero<T> {
     public boolean cercaDFS(T dato){
         return cercaNodoDFS(dato) != null;
     }
-
-    public static void main(String[] args) {
-        
-    }
 }
